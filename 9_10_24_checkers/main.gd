@@ -16,8 +16,8 @@ var highlighted_tiles: Array[Vector2i]
 var focused_piece: Piece
 var whose_turn := Team.PLAYER_ONE
 var _mouse_pos: Vector2i
-
-#@onready var _visuals: Visuals = %Visuals
+var _jumped_this_turn := false
+var _can_jump_either_dir: Array[bool]
 
 
 func _ready() -> void:
@@ -31,6 +31,7 @@ func _input(event: InputEvent) -> void:
 	elif event is InputEventMouseButton and event.is_action_pressed("click"):
 		if _mouse_pos in highlighted_tiles:
 			_move_piece()
+			_start_next_turn()
 			return
 
 		_get_clicked_piece()
@@ -63,6 +64,7 @@ func _get_hovered_piece() -> void:
 func _get_clicked_piece() -> void:
 	for piece in pieces:
 		if piece.position == _mouse_pos and piece.team == whose_turn:
+			_can_jump_either_dir.clear()
 			focused_piece = piece
 			highlighted_tiles.clear()
 			_get_available_moves()
@@ -70,26 +72,27 @@ func _get_clicked_piece() -> void:
 
 func _get_available_moves() -> void:
 	if focused_piece.team == Team.PLAYER_ONE:
-		var upper_left := _get_tile(focused_piece.position + -Vector2i.ONE)
-		var upper_right := _get_tile(focused_piece.position + Vector2i(1, -1))
-		if not upper_left == INVALID_TILE:
-			highlighted_tiles.append(upper_left)
-		if not upper_right == INVALID_TILE:
-			highlighted_tiles.append(upper_right)
+		_determine_tile_type(-Vector2i.ONE)
+		_determine_tile_type(Vector2i(1, -1))
 	elif focused_piece.team == Team.PLAYER_TWO:
-		var lower_left := _get_tile(focused_piece.position + Vector2i(-1, 1))
-		var lower_right := _get_tile(focused_piece.position + Vector2i.ONE)
-		if not lower_left == INVALID_TILE:
-			highlighted_tiles.append(lower_left)
-		if not lower_right == INVALID_TILE:
-			highlighted_tiles.append(lower_right)
+		_determine_tile_type(Vector2i(-1, 1))
+		_determine_tile_type(Vector2i.ONE)
+
+
+func _determine_tile_type(direction: Vector2i) -> void:
+	var diagonal_tile = focused_piece.position + direction
+	var tile := _get_tile(diagonal_tile)
+	if not tile == INVALID_TILE:
+		highlighted_tiles.append(tile)
+
+	if tile == diagonal_tile or tile == INVALID_TILE:
+		_can_jump_either_dir.append(false)
+	else:
+		_can_jump_either_dir.append(true)
 
 
 func _get_tile(tile_pos: Vector2i) -> Vector2i:
-	if tile_pos.x < 0 or tile_pos.x > (GRID_SIZE - 1):
-		return INVALID_TILE
-
-	if tile_pos.y < 0 or tile_pos.y > (GRID_SIZE - 1):
+	if not _validate_tile(tile_pos):
 		return INVALID_TILE
 
 	for piece in pieces:
@@ -97,25 +100,53 @@ func _get_tile(tile_pos: Vector2i) -> Vector2i:
 			if focused_piece.team == piece.team:
 				return INVALID_TILE
 			else:
-				# Can jump over an opponent piece
+				# There is an opponent piece in diagonal tile
+				# Check if it can be jumped
 				var direction := tile_pos - focused_piece.position
 				return _get_tile(tile_pos + direction)
 
+	# Can jump to this tile
 	return tile_pos
 
 
+func _validate_tile(tile_pos) -> bool:
+	if tile_pos.x < 0 or tile_pos.x > (GRID_SIZE - 1):
+		return false
+
+	if tile_pos.y < 0 or tile_pos.y > (GRID_SIZE - 1):
+		return false
+
+	return true
+
+
 func _move_piece() -> void:
+	_determine_if_jumping()
+	focused_piece.position = _mouse_pos
+	highlighted_tiles.clear()
+	_can_jump_either_dir.clear()
+
+
+func _determine_if_jumping() -> void:
 	var distance := _mouse_pos - focused_piece.position
 	if distance.abs() > Vector2i.ONE:
+		_jumped_this_turn = true
 		var jumped_tile := _mouse_pos - (distance / 2)
 		for piece in pieces:
 			if piece.position == jumped_tile:
 				pieces.erase(piece)
-				break
+				return
 
-	focused_piece.position = _mouse_pos
+	_jumped_this_turn = false
+
+
+func _start_next_turn() -> void:
+	if _jumped_this_turn:
+		_get_available_moves()
+		if true in _can_jump_either_dir:
+			return
+
 	focused_piece = null
-	highlighted_tiles.clear()
+
 	if whose_turn == Team.PLAYER_ONE:
 		whose_turn = Team.PLAYER_TWO
 	else:
