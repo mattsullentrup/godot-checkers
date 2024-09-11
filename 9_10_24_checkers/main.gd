@@ -9,7 +9,6 @@ enum Team {
 
 const CELL_SIZE = 128
 const GRID_SIZE = 8
-const RADIUS = 48
 const INVALID_TILE = -Vector2i.ONE
 
 var pieces: Array[Piece]
