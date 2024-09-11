@@ -2,10 +2,7 @@ class_name Visuals
 extends Node2D
 
 
-var cell_size: int
-var grid_size: int
-var focused_piece: Main.Piece
-var highlighted_tiles: Array[Vector2i]
+@onready var _parent := get_parent() as Main
 
 
 func _draw() -> void:
@@ -19,30 +16,30 @@ func _process(_delta: float) -> void:
 
 
 func _draw_pieces() -> void:
-	for piece: Main.Piece in get_parent().pieces:
+	for piece: Main.Piece in _parent.pieces:
 		var color: Color = _get_piece_color(piece)
 
 		@warning_ignore("integer_division")
-		var offset = cell_size / 2
+		var offset = _parent.CELL_SIZE / 2
 		var offset_pos = Vector2i(
-				(piece.position.x * cell_size) + offset,
-				(piece.position.y * cell_size) + offset
+				(piece.position.x * _parent.CELL_SIZE) + offset,
+				(piece.position.y * _parent.CELL_SIZE) + offset
 		)
 
 		draw_circle(offset_pos, Main.RADIUS, color, true, -1, true)
 
 
 func _highlight_tiles() -> void:
-	for tile: Vector2i in highlighted_tiles:
+	for tile: Vector2i in _parent.highlighted_tiles:
 		draw_rect(
-				Rect2i(tile * cell_size, Vector2i(cell_size, cell_size)),
+				Rect2i(tile * _parent.CELL_SIZE, Vector2i(_parent.CELL_SIZE, _parent.CELL_SIZE)),
 				Color.AQUA, false,
 				5, true
 		)
 
 
 func _get_piece_color(piece: Main.Piece) -> Color:
-	if piece == focused_piece:
+	if piece == _parent.focused_piece:
 		return Color.GRAY
 	elif piece.is_hovered:
 		return Color.GOLD
@@ -53,11 +50,14 @@ func _get_piece_color(piece: Main.Piece) -> Color:
 
 
 func _draw_tiles() -> void:
-	for y in grid_size:
-		for x in grid_size:
+	for y in _parent.GRID_SIZE:
+		for x in _parent.GRID_SIZE:
 			var color := Color.WHITE if (x + y) % 2 == 0 else Color.DARK_SLATE_BLUE
 			draw_rect(
-					Rect2i(Vector2i(x * cell_size, y * cell_size), Vector2i(cell_size, cell_size)),
+					Rect2i(
+							Vector2i(x * _parent.CELL_SIZE, y * _parent.CELL_SIZE),
+							Vector2i(_parent.CELL_SIZE, _parent.CELL_SIZE)
+					),
 					color,
 					true
 			)

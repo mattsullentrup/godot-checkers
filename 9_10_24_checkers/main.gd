@@ -13,20 +13,16 @@ const RADIUS = 48
 const INVALID_TILE = -Vector2i.ONE
 
 var pieces: Array[Piece]
-var _highlighted_tiles: Array[Vector2i]
+var highlighted_tiles: Array[Vector2i]
+var focused_piece: Piece
+
 var _mouse_pos: Vector2i
-var _focused_piece: Piece
 #var _whose_turn := Team.PLAYER_ONE
 
-@onready var _visuals: Visuals = %Visuals
+#@onready var _visuals: Visuals = %Visuals
 
 
 func _ready() -> void:
-	_visuals.cell_size = CELL_SIZE
-	_visuals.grid_size = GRID_SIZE
-	_visuals.focused_piece = _focused_piece
-	_visuals.highlighted_tiles = _highlighted_tiles
-
 	_create_pieces(0, 3, Team.PLAYER_TWO)
 	_create_pieces(5, GRID_SIZE, Team.PLAYER_ONE)
 
@@ -35,7 +31,7 @@ func _input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion:
 		_get_hovered_piece()
 	elif event is InputEventMouseButton and event.is_action_pressed("click"):
-		if _mouse_pos in _highlighted_tiles:
+		if _mouse_pos in highlighted_tiles:
 			_move_piece()
 			return
 
@@ -69,28 +65,28 @@ func _get_hovered_piece() -> void:
 func _get_clicked_piece() -> void:
 	for piece in pieces:
 		if piece.position == _mouse_pos:
-			_focused_piece = piece
-			_highlighted_tiles.clear()
+			focused_piece = piece
+			highlighted_tiles.clear()
 			_get_available_moves()
 
 
 func _get_available_moves() -> void:
-	if _focused_piece.team == Team.PLAYER_ONE:
-		var upper_left := _get_tile(_focused_piece.position + -Vector2i.ONE)
-		var upper_right := _get_tile(_focused_piece.position + Vector2i(1, -1))
+	if focused_piece.team == Team.PLAYER_ONE:
+		var upper_left := _get_tile(focused_piece.position + -Vector2i.ONE)
+		var upper_right := _get_tile(focused_piece.position + Vector2i(1, -1))
 		if not upper_left == INVALID_TILE:
-			_highlighted_tiles.append(upper_left)
+			highlighted_tiles.append(upper_left)
 
 		if not upper_right == INVALID_TILE:
-			_highlighted_tiles.append(upper_right)
-	elif _focused_piece.team == Team.PLAYER_TWO:
-		var lower_left := _get_tile(_focused_piece.position + Vector2i(-1, 1))
-		var lower_right := _get_tile(_focused_piece.position + Vector2i.ONE)
+			highlighted_tiles.append(upper_right)
+	elif focused_piece.team == Team.PLAYER_TWO:
+		var lower_left := _get_tile(focused_piece.position + Vector2i(-1, 1))
+		var lower_right := _get_tile(focused_piece.position + Vector2i.ONE)
 		if not lower_left == INVALID_TILE:
-			_highlighted_tiles.append(lower_left)
+			highlighted_tiles.append(lower_left)
 
 		if not lower_right == INVALID_TILE:
-			_highlighted_tiles.append(lower_right)
+			highlighted_tiles.append(lower_right)
 
 
 func _get_tile(tile_pos: Vector2i) -> Vector2i:
@@ -102,18 +98,18 @@ func _get_tile(tile_pos: Vector2i) -> Vector2i:
 
 	for piece in pieces:
 		if piece.position == tile_pos:
-			if _focused_piece.team == piece.team:
+			if focused_piece.team == piece.team:
 				return INVALID_TILE
 			else:
 				# Can jump over an opponent piece
-				var direction := tile_pos - _focused_piece.position
+				var direction := tile_pos - focused_piece.position
 				return _get_tile(tile_pos + direction)
 
 	return tile_pos
 
 
 func _move_piece() -> void:
-	var distance := _mouse_pos - _focused_piece.position
+	var distance := _mouse_pos - focused_piece.position
 	if distance.abs() > Vector2i.ONE:
 		var jumped_tile := _mouse_pos - (distance / 2)
 		for piece in pieces:
@@ -121,9 +117,9 @@ func _move_piece() -> void:
 				pieces.erase(piece)
 				break
 
-	_focused_piece.position = _mouse_pos
-	_focused_piece = null
-	_highlighted_tiles.clear()
+	focused_piece.position = _mouse_pos
+	focused_piece = null
+	highlighted_tiles.clear()
 
 
 func _create_pieces(start_y: int, end_y: int, team: Team) -> void:
