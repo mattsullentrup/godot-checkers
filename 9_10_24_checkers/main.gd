@@ -14,9 +14,8 @@ const INVALID_TILE = -Vector2i.ONE
 var pieces: Array[Piece]
 var highlighted_tiles: Array[Vector2i]
 var focused_piece: Piece
-
+var whose_turn := Team.PLAYER_ONE
 var _mouse_pos: Vector2i
-#var _whose_turn := Team.PLAYER_ONE
 
 #@onready var _visuals: Visuals = %Visuals
 
@@ -55,7 +54,7 @@ func _get_mouse_pos() -> void:
 
 func _get_hovered_piece() -> void:
 	for piece in pieces:
-		if piece.position == _mouse_pos:
+		if piece.position == _mouse_pos and piece.team == whose_turn:
 			piece.is_hovered = true
 		else:
 			piece.is_hovered = false
@@ -63,7 +62,7 @@ func _get_hovered_piece() -> void:
 
 func _get_clicked_piece() -> void:
 	for piece in pieces:
-		if piece.position == _mouse_pos:
+		if piece.position == _mouse_pos and piece.team == whose_turn:
 			focused_piece = piece
 			highlighted_tiles.clear()
 			_get_available_moves()
@@ -75,7 +74,6 @@ func _get_available_moves() -> void:
 		var upper_right := _get_tile(focused_piece.position + Vector2i(1, -1))
 		if not upper_left == INVALID_TILE:
 			highlighted_tiles.append(upper_left)
-
 		if not upper_right == INVALID_TILE:
 			highlighted_tiles.append(upper_right)
 	elif focused_piece.team == Team.PLAYER_TWO:
@@ -83,7 +81,6 @@ func _get_available_moves() -> void:
 		var lower_right := _get_tile(focused_piece.position + Vector2i.ONE)
 		if not lower_left == INVALID_TILE:
 			highlighted_tiles.append(lower_left)
-
 		if not lower_right == INVALID_TILE:
 			highlighted_tiles.append(lower_right)
 
@@ -119,6 +116,10 @@ func _move_piece() -> void:
 	focused_piece.position = _mouse_pos
 	focused_piece = null
 	highlighted_tiles.clear()
+	if whose_turn == Team.PLAYER_ONE:
+		whose_turn = Team.PLAYER_TWO
+	else:
+		whose_turn = Team.PLAYER_ONE
 
 
 func _create_pieces(start_y: int, end_y: int, team: Team) -> void:
