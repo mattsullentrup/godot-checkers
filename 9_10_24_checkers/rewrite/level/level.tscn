@@ -10,6 +10,7 @@
 script = ExtResource("1_25vf3")
 
 [node name="LevelGenerator" type="Node2D" parent="."]
+unique_name_in_owner = true
 script = ExtResource("1_pjm2a")
 
 [node name="CellHighlights" type="Node2D" parent="."]
@@ -19,9 +20,11 @@ unique_name_in_owner = true
 script = ExtResource("3_tg5mk")
 
 [node name="PlayerGroup" type="Node2D" parent="Units"]
+unique_name_in_owner = true
 script = ExtResource("4_a64pc")
 
 [node name="OpponentGroup" type="Node2D" parent="Units"]
+unique_name_in_owner = true
 script = ExtResource("4_a64pc")
 
 [node name="UI" type="CanvasLayer" parent="."]

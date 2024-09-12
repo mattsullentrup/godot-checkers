@@ -6,9 +6,12 @@ const CELL_SIZE = 128
 const GRID_SIZE = 8
 
 @onready var _units_container: UnitsContainer = %Units
+@onready var _level_generator: LevelGenerator = %LevelGenerator
 
 
 func _ready() -> void:
+	_level_generator.generate_level()
+
 	_units_container.battle_over.connect(_on_battle_over)
 	_units_container.init()
 	_units_container.start_battle()
