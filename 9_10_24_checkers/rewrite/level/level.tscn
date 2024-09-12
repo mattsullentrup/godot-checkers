@@ -1,7 +1,7 @@
 [gd_scene load_steps=6 format=3 uid="uid://7rng3jsdgwhx"]
 
 [ext_resource type="Script" path="res://rewrite/level/level.gd" id="1_25vf3"]
-[ext_resource type="Script" path="res://rewrite/level/board_generator.gd" id="1_pjm2a"]
+[ext_resource type="Script" path="res://rewrite/level/level_generator.gd" id="1_pjm2a"]
 [ext_resource type="Script" path="res://rewrite/units/units_container.gd" id="3_tg5mk"]
 [ext_resource type="Script" path="res://rewrite/units/unit_group.gd" id="4_a64pc"]
 [ext_resource type="Script" path="res://rewrite/ui/ui.gd" id="6_rd7dn"]
@@ -9,7 +9,7 @@
 [node name="Level" type="Node2D"]
 script = ExtResource("1_25vf3")
 
-[node name="BoardGenerator" type="Node2D" parent="."]
+[node name="LevelGenerator" type="Node2D" parent="."]
 script = ExtResource("1_pjm2a")
 
 [node name="CellHighlights" type="Node2D" parent="."]
