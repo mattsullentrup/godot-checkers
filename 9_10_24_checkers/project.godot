@@ -12,7 +12,7 @@ config_version=5
 
 config/name="9_10_24_checkers"
 config/tags=PackedStringArray("experiment")
-run/main_scene="res://main.tscn"
+run/main_scene="res://rewrite/level/level.tscn"
 config/features=PackedStringArray("4.3", "GL Compatibility")
 config/icon="res://icon.svg"
 
@@ -22,6 +22,17 @@ window/size/viewport_width=1024
 window/size/viewport_height=1024
 window/size/mode=4
 window/stretch/mode="canvas_items"
+
+[file_customization]
+
+folder_colors={
+"res://old/": "gray",
+"res://rewrite/": "red",
+"res://rewrite/level/": "orange",
+"res://rewrite/ui/": "teal",
+"res://rewrite/units/": "green",
+"res://rewrite/units/unit/": "yellow"
+}
 
 [input]
 

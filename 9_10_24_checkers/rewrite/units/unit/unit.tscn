@@ -1,0 +1,10 @@
+[gd_scene load_steps=3 format=3 uid="uid://do0uo4ytei58b"]
+
+[ext_resource type="Script" path="res://rewrite/units/unit/unit.gd" id="1_w7lj1"]
+[ext_resource type="Script" path="res://rewrite/units/unit/unit_visuals.gd" id="2_80clf"]
+
+[node name="Unit" type="Node2D"]
+script = ExtResource("1_w7lj1")
+
+[node name="UnitVisuals" type="Node2D" parent="."]
+script = ExtResource("2_80clf")
