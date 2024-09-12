@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://rewrite/level/level.gd" id="1_25vf3"]
 [ext_resource type="Script" path="res://rewrite/level/board_generator.gd" id="1_pjm2a"]
-[ext_resource type="Script" path="res://rewrite/units/units.gd" id="3_tg5mk"]
+[ext_resource type="Script" path="res://rewrite/units/units_container.gd" id="3_tg5mk"]
 [ext_resource type="Script" path="res://rewrite/units/unit_group.gd" id="4_a64pc"]
 [ext_resource type="Script" path="res://rewrite/ui/ui.gd" id="6_rd7dn"]
 
@@ -15,6 +15,7 @@ script = ExtResource("1_pjm2a")
 [node name="CellHighlights" type="Node2D" parent="."]
 
 [node name="Units" type="Node2D" parent="."]
+unique_name_in_owner = true
 script = ExtResource("3_tg5mk")
 
 [node name="PlayerGroup" type="Node2D" parent="Units"]
@@ -27,10 +28,10 @@ script = ExtResource("4_a64pc")
 script = ExtResource("6_rd7dn")
 
 [node name="TurnLabel" type="Label" parent="UI"]
-anchors_preset = 1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -133.0
-offset_bottom = 23.0
-grow_horizontal = 0
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -23.0
+offset_right = 133.0
+grow_vertical = 0
 text = "Player/Opponent"

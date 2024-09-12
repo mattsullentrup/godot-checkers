@@ -15,9 +15,9 @@ func _process(_delta: float) -> void:
 
 
 func _get_unit_color() -> Color:
-	if get_parent().team == Units.Team.PLAYER:
+	if get_parent().team == UnitsContainer.Team.PLAYER:
 		return Color.MEDIUM_VIOLET_RED
-	elif get_parent().team == Units.Team.OPPONENT:
+	elif get_parent().team == UnitsContainer.Team.OPPONENT:
 		return Color.MIDNIGHT_BLUE
 
 	return Color.TRANSPARENT

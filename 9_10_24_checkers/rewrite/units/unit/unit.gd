@@ -2,4 +2,6 @@ class_name Unit
 extends Node2D
 
 
-var team: Units.Team
+signal got_jumped
+
+var team: UnitsContainer.Team
