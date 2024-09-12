@@ -101,10 +101,6 @@ func _get_tile(tile_pos: Vector2i) -> Vector2i:
 			if focused_piece.team == piece.team:
 				return INVALID_TILE
 			else:
-				# This is where we need to find out if there is an opponent piece on the other side
-				# of a diagonal opponent piece. Currently we keep going deeper recursively because
-				# an opponent piece is diagonally placed
-
 				# There is an opponent piece in diagonal tile
 				# Check if it can be jumped
 				var direction := tile_pos - focused_piece.position
