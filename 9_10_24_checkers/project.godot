@@ -19,6 +19,8 @@ config/icon="res://icon.svg"
 [autoload]
 
 Globals="*res://rewrite/autoloads/globals.gd"
+EventBus="*res://rewrite/autoloads/event_bus.gd"
+Navigation="*res://rewrite/autoloads/navigation.gd"
 
 [display]
 
