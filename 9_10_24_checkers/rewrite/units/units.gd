@@ -1,3 +1,4 @@
+class_name Units
 extends Node2D
 
 
