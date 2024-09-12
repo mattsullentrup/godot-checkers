@@ -68,6 +68,7 @@ func _get_clicked_piece() -> void:
 			focused_piece = piece
 			highlighted_tiles.clear()
 			_get_available_moves()
+			return
 
 
 func _get_available_moves() -> void:
@@ -105,7 +106,7 @@ func _get_tile(tile_pos: Vector2i) -> Vector2i:
 				var direction := tile_pos - focused_piece.position
 				return _get_tile(tile_pos + direction)
 
-	# Can jump to this tile
+	# Can move normally or jump to this tile
 	return tile_pos
 
 
@@ -120,7 +121,8 @@ func _validate_tile(tile_pos) -> bool:
 
 
 func _move_piece() -> void:
-	_determine_if_jumping()
+	if not _jumped_this_turn:
+		_determine_if_jumping()
 	focused_piece.position = _mouse_pos
 	highlighted_tiles.clear()
 	_can_jump_either_dir.clear()
@@ -146,6 +148,7 @@ func _start_next_turn() -> void:
 			return
 
 	focused_piece = null
+	_jumped_this_turn = false
 
 	if whose_turn == Team.PLAYER_ONE:
 		whose_turn = Team.PLAYER_TWO
