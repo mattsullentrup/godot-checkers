@@ -37,6 +37,4 @@ func _create_units(start_y: int, end_y: int, group: UnitGroup) -> void:
 		for x in range(start, Globals.GRID_SIZE, 2):
 			var unit = UNIT.instantiate()
 			unit.global_position = Vector2i(x, y) * Globals.CELL_SIZE
-			#piece.team = team
-			#units.append(piece)
 			group.add_child(unit)

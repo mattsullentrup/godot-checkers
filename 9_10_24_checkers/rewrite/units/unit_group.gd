@@ -19,7 +19,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		return
 
 	var cell: Vector2i = Navigation.world_to_cell(get_global_mouse_position())
-	for unit in get_active_units():
+	for unit in get_children():
 		if not unit.cell == cell:
 			continue
 
@@ -48,8 +48,9 @@ func _disconnect_current_unit_signal() -> void:
 
 
 func take_turn() -> void:
-	var active_units = get_active_units()
-	_disconnect_current_unit_signal()
+	var active_units = get_children()
+	if _current_unit:
+		_disconnect_current_unit_signal()
 	EventBus.clear_cell_highlights.emit()
 	_current_unit = null
 	EventBus.show_selectable_player_units.emit(
@@ -63,13 +64,18 @@ func _end_turn() -> void:
 	turn_completed.emit(self)
 
 
-func get_active_units() -> Array:
-	var units
+#func get_active_units() -> Array:
+	#var units: Array[Unit]
+	#return units
+
+
+func _get_moveable_units() -> Array:
+	var units: Array[Unit]
 	return units
 
 
 func _on_unit_defeated() -> void:
-	if get_active_units().size() == 0:
+	if get_children().size() == 0:
 		defeated.emit()
 
 

@@ -22,10 +22,7 @@ func init() -> void:
 
 func start_battle() -> void:
 	_whose_turn = Globals.Team.PLAYER
-
-
-func get_active_units() -> void:
-	pass
+	_player_group.take_turn()
 
 
 func _on_turn_completed(group: UnitGroup) -> void:

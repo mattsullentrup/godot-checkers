@@ -18,4 +18,7 @@ func _ready() -> void:
 
 
 func _on_battle_over(player_won: bool) -> void:
-	pass
+	if player_won:
+		print("player won")
+	else:
+		print("opponent won")
