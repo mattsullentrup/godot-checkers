@@ -4,7 +4,7 @@ extends Node2D
 
 signal battle_over(player_won: bool)
 
-var _whose_turn: Globals.Team
+var _active_group: UnitGroup
 
 @onready var _player_group: UnitGroup = %PlayerGroup
 @onready var _opponent_group: UnitGroup = %OpponentGroup
@@ -21,7 +21,7 @@ func init() -> void:
 
 
 func start_battle() -> void:
-	_whose_turn = Globals.Team.PLAYER
+	_active_group = _player_group
 	_player_group.take_turn()
 
 
@@ -33,9 +33,9 @@ func _on_turn_completed(group: UnitGroup) -> void:
 
 
 func _step_turn() -> void:
-	if _whose_turn == Globals.Team.PLAYER:
-		_whose_turn = Globals.Team.OPPONENT
+	if _active_group == _player_group:
+		_active_group = _opponent_group
 		_opponent_group.take_turn()
-	elif _whose_turn == Globals.Team.OPPONENT:
-		_whose_turn = Globals.Team.PLAYER
+	elif _active_group == _opponent_group:
+		_active_group = _player_group
 		_player_group.take_turn()
