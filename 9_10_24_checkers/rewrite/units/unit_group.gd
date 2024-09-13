@@ -14,22 +14,6 @@ var _current_unit_index: int = 0
 var _current_mouse_cell: Vector2i
 
 
-func _unhandled_input(event: InputEvent) -> void:
-	if not event.is_action_pressed("click"):
-		return
-
-	var cell: Vector2i = Navigation.world_to_cell(get_global_mouse_position())
-	for unit in get_children():
-		if not unit.cell == cell:
-			continue
-
-		get_viewport().set_input_as_handled()
-		_disconnect_current_unit_signal()
-		_current_unit = unit
-		_connect_current_unit_signal()
-		return
-
-
 func init() -> void:
 	for child in get_children():
 		var unit := child as Unit
@@ -37,6 +21,14 @@ func init() -> void:
 			unit.team = team
 			unit.unit_defeated.connect(_on_unit_defeated)
 			_units.append(unit)
+
+
+func set_current_unit(unit: Unit) -> void:
+	if _current_unit:
+		_disconnect_current_unit_signal()
+
+	_current_unit = unit
+	_connect_current_unit_signal()
 
 
 func _connect_current_unit_signal() -> void:

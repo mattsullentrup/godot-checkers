@@ -10,6 +10,20 @@ var _active_group: UnitGroup
 @onready var _opponent_group: UnitGroup = %OpponentGroup
 
 
+func _unhandled_input(event: InputEvent) -> void:
+	if not event.is_action_pressed("click"):
+		return
+
+	var cell: Vector2i = Navigation.world_to_cell(get_global_mouse_position())
+	for unit in _active_group.get_children():
+		if not unit.cell == cell:
+			continue
+
+		get_viewport().set_input_as_handled()
+		_active_group.set_current_unit(unit)
+		return
+
+
 func init() -> void:
 	_player_group.team = Globals.Team.PLAYER
 	_player_group.init()
