@@ -45,16 +45,16 @@ func _disconnect_current_unit_signal() -> void:
 
 
 func take_turn() -> void:
-	_get_moveable_units()
 	if _current_unit:
 		_disconnect_current_unit_signal()
 	EventBus.clear_cell_highlights.emit()
 	_current_unit = null
 
-	var cells: Array = moveable_units.map(func(unit: Unit) -> Vector2i: return unit.cell)
-	var typed_cells: Array[Vector2i]
-	typed_cells.assign(cells)
-	EventBus.show_selectable_player_units.emit(typed_cells)
+	_get_moveable_units()
+	#var cells: Array = moveable_units.map(func(unit: Unit) -> Vector2i: return unit.cell)
+	#var typed_cells: Array[Vector2i]
+	#typed_cells.assign(cells)
+	#EventBus.show_selectable_player_units.emit(typed_cells)
 
 
 func _end_turn() -> void:
@@ -67,6 +67,7 @@ func _get_moveable_units() -> void:
 	for unit: Unit in units:
 		if _can_unit_move(unit, unit.directions):
 			moveable_units.append(unit)
+			unit.can_move = true
 
 
 func _can_unit_move(unit: Unit, directions: Array[Globals.Direction]) -> bool:
@@ -79,6 +80,7 @@ func _can_unit_move(unit: Unit, directions: Array[Globals.Direction]) -> bool:
 		):
 			can_move_either_direction.append(false)
 			continue
+
 		can_move_either_direction.append(true)
 
 	return true in can_move_either_direction
