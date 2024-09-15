@@ -17,8 +17,8 @@ func _unhandled_input(event: InputEvent) -> void:
 		return
 
 	_current_mouse_cell = Navigation.world_to_cell(get_global_mouse_position())
-	for unit in _active_group.get_children():
-		if not unit.cell == _current_mouse_cell:
+	for unit in _active_group.units:
+		if not unit.cell == _current_mouse_cell or unit not in _active_group.moveable_units:
 			continue
 
 		get_viewport().set_input_as_handled()
