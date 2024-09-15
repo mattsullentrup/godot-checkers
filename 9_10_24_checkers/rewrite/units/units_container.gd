@@ -16,9 +16,9 @@ func _unhandled_input(event: InputEvent) -> void:
 	if not event.is_action_pressed("click"):
 		return
 
-	var cell: Vector2i = Navigation.world_to_cell(get_global_mouse_position())
+	_current_mouse_cell = Navigation.world_to_cell(get_global_mouse_position())
 	for unit in _active_group.get_children():
-		if not unit.cell == cell:
+		if not unit.cell == _current_mouse_cell:
 			continue
 
 		get_viewport().set_input_as_handled()

@@ -14,7 +14,7 @@ var team: Globals.Team
 var units: Array[Unit]
 var _current_unit: Unit
 var _current_unit_index: int = 0
-var moveable_units: Array
+var moveable_units: Array[Unit]
 
 
 func init() -> void:
@@ -50,9 +50,11 @@ func take_turn() -> void:
 		_disconnect_current_unit_signal()
 	EventBus.clear_cell_highlights.emit()
 	_current_unit = null
-	#EventBus.show_selectable_player_units.emit(
-			#active_units.map(func(unit): return unit.cell)
-	#)
+
+	var cells: Array = moveable_units.map(func(unit: Unit) -> Vector2i: return unit.cell)
+	var typed_cells: Array[Vector2i]
+	typed_cells.assign(cells)
+	EventBus.show_selectable_player_units.emit(typed_cells)
 
 
 func _end_turn() -> void:
