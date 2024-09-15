@@ -8,10 +8,9 @@ signal defeated
 const UNIT = preload("res://rewrite/units/unit/unit.tscn")
 
 var team: Globals.Team
-var _units: Array[Unit]
+var units: Array[Unit]
 var _current_unit: Unit
 var _current_unit_index: int = 0
-var _current_mouse_cell: Vector2i
 
 
 func init() -> void:
@@ -20,7 +19,7 @@ func init() -> void:
 		if unit:
 			unit.team = team
 			unit.unit_defeated.connect(_on_unit_defeated)
-			_units.append(unit)
+			units.append(unit)
 
 
 func set_current_unit(unit: Unit) -> void:
