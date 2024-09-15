@@ -50,6 +50,9 @@ func take_turn() -> void:
 	EventBus.clear_cell_highlights.emit()
 	_current_unit = null
 
+	for unit: Unit in moveable_units:
+		unit.can_move = false
+
 	_get_moveable_units()
 	#var cells: Array = moveable_units.map(func(unit: Unit) -> Vector2i: return unit.cell)
 	#var typed_cells: Array[Vector2i]
