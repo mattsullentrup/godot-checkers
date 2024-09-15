@@ -22,10 +22,14 @@ script = ExtResource("3_tg5mk")
 [node name="PlayerGroup" type="Node2D" parent="Units"]
 unique_name_in_owner = true
 script = ExtResource("4_a64pc")
+team_color = Color(0.098, 0.098, 0.44, 1)
+_directions = Array[int]([0, 1])
 
 [node name="OpponentGroup" type="Node2D" parent="Units"]
 unique_name_in_owner = true
 script = ExtResource("4_a64pc")
+team_color = Color(0.78, 0.082, 0.052, 1)
+_directions = Array[int]([2, 3])
 
 [node name="UI" type="CanvasLayer" parent="."]
 script = ExtResource("6_rd7dn")

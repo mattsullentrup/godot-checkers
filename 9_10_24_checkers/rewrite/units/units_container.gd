@@ -4,9 +4,9 @@ extends Node2D
 
 signal battle_over(player_won: bool)
 
+var all_units: Array[Unit]
 var _active_group: UnitGroup
 var _current_mouse_cell: Vector2i
-var _all_units: Array[Unit]
 
 @onready var _player_group: UnitGroup = %PlayerGroup
 @onready var _opponent_group: UnitGroup = %OpponentGroup
@@ -59,35 +59,8 @@ func _step_turn() -> void:
 		_active_group = _player_group
 		_player_group.take_turn()
 
-	_get_moveable_units()
-
-
-func _get_moveable_units() -> void:
-	var directions: Array
-	if _active_group == _player_group:
-		directions = [Globals.UPPER_LEFT, Globals.UPPER_RIGHT]
-	elif _active_group == _opponent_group:
-		directions = [Globals.LOWER_LEFT, Globals.LOWER_RIGHT]
-
-	var moveable_units: Array
-	for unit in _active_group.units:
-		if _can_unit_move(unit, directions):
-			moveable_units.append(unit)
-
-
-func _can_unit_move(unit: Unit, directions: Array[Vector2i]) -> bool:
-	var can_move_either_direction: Array[bool]
-	for direction in directions:
-		var target_cell = unit.cell + direction
-		if _all_units.any(func(x: Unit): return x.cell == target_cell):
-			can_move_either_direction.append(false)
-			continue
-		can_move_either_direction.append(true)
-
-	return true in can_move_either_direction
-
 
 func _get_all_units() -> void:
-	_all_units.clear()
-	_all_units = _player_group.units
-	_all_units.append_array(_opponent_group.units)
+	all_units.clear()
+	all_units = _player_group.units.duplicate()
+	all_units.append_array(_opponent_group.units.duplicate())

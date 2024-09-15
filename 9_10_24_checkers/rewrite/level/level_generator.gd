@@ -33,7 +33,7 @@ func _draw_tiles() -> void:
 
 func _create_units(start_y: int, end_y: int, group: UnitGroup) -> void:
 	for y in range(start_y, end_y):
-		var start = 1 if y in [1, 5, 7] else 0
+		var start = 0 if y in [1, 5, 7] else 1
 		for x in range(start, Globals.GRID_SIZE, 2):
 			var unit = UNIT.instantiate()
 			unit.cell = Vector2i(x, y)

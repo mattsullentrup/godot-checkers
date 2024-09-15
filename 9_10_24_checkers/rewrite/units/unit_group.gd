@@ -7,10 +7,14 @@ signal defeated
 
 const UNIT = preload("res://rewrite/units/unit/unit.tscn")
 
+@export var team_color: Color
+@export var _directions: Array[Globals.Direction]
+
 var team: Globals.Team
 var units: Array[Unit]
 var _current_unit: Unit
 var _current_unit_index: int = 0
+var moveable_units: Array
 
 
 func init() -> void:
@@ -18,6 +22,8 @@ func init() -> void:
 		var unit := child as Unit
 		if unit:
 			unit.team = team
+			unit.directions = _directions
+			unit.color = team_color
 			unit.unit_defeated.connect(_on_unit_defeated)
 			units.append(unit)
 
@@ -39,14 +45,14 @@ func _disconnect_current_unit_signal() -> void:
 
 
 func take_turn() -> void:
-	var active_units = get_children()
+	_get_moveable_units()
 	if _current_unit:
 		_disconnect_current_unit_signal()
 	EventBus.clear_cell_highlights.emit()
 	_current_unit = null
-	EventBus.show_selectable_player_units.emit(
-			active_units.map(func(unit): return unit.cell)
-	)
+	#EventBus.show_selectable_player_units.emit(
+			#active_units.map(func(unit): return unit.cell)
+	#)
 
 
 func _end_turn() -> void:
@@ -55,14 +61,35 @@ func _end_turn() -> void:
 	turn_completed.emit(self)
 
 
-#func get_active_units() -> Array:
-	#var units: Array[Unit]
-	#return units
+func _get_moveable_units() -> void:
+	for unit: Unit in units:
+		if _can_unit_move(unit, unit.directions):
+			moveable_units.append(unit)
 
 
-func _get_moveable_units() -> Array:
-	var units: Array[Unit]
-	return units
+func _can_unit_move(unit: Unit, directions: Array[Globals.Direction]) -> bool:
+	var can_move_either_direction: Array[bool]
+	for direction in directions:
+		var target_cell = unit.cell + Globals.movement_vectors.get(direction)
+		if (
+				get_parent().all_units.any(func(x: Unit) -> bool: return x.cell == target_cell)
+				or not _validate_tile(target_cell)
+		):
+			can_move_either_direction.append(false)
+			continue
+		can_move_either_direction.append(true)
+
+	return true in can_move_either_direction
+
+
+func _validate_tile(tile_pos) -> bool:
+	if tile_pos.x < 0 or tile_pos.x > (Globals.GRID_SIZE - 1):
+		return false
+
+	if tile_pos.y < 0 or tile_pos.y > (Globals.GRID_SIZE - 1):
+		return false
+
+	return true
 
 
 func _on_unit_defeated() -> void:

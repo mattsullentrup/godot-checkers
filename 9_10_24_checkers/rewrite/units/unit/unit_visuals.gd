@@ -8,7 +8,7 @@ const OFFSET = Vector2i(Globals.CELL_SIZE / 2, Globals.CELL_SIZE / 2)
 
 
 func _draw() -> void:
-	var color: Color = _get_unit_color()
+	var color: Color = get_parent().color
 	draw_circle(OFFSET, RADIUS, color, true, -1, true)
 
 
