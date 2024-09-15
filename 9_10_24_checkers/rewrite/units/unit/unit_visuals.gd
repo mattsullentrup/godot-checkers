@@ -14,12 +14,3 @@ func _draw() -> void:
 
 func _process(_delta: float) -> void:
 	queue_redraw()
-
-
-func _get_unit_color() -> Color:
-	if get_parent().team == Globals.Team.PLAYER:
-		return Color.MEDIUM_VIOLET_RED
-	elif get_parent().team == Globals.Team.OPPONENT:
-		return Color.MIDNIGHT_BLUE
-
-	return Color.TRANSPARENT
