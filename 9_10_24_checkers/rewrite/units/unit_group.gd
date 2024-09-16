@@ -57,6 +57,9 @@ func take_turn() -> void:
 	_get_moveable_units()
 
 	if not jumpable_units.is_empty():
+		for unit in moveable_units:
+			if not unit.can_jump:
+				unit.can_move = false
 		moveable_units.clear()
 		moveable_units = jumpable_units.duplicate()
 
@@ -64,9 +67,16 @@ func take_turn() -> void:
 func _end_turn() -> void:
 	_disconnect_selected_unit_signal()
 	selected_unit = null
+	#moveable_units.assign(moveable_units.map(func(x):
+			#x.can_move = false
+			#return x
+	#))
 	for unit: Unit in moveable_units:
 		unit.can_move = false
+		unit.can_jump = false
+
 	moveable_units.clear()
+	jumpable_units.clear()
 	turn_completed.emit(self)
 
 
@@ -122,11 +132,6 @@ func _can_jump_to_cell(target_cell):
 	if not _validate_tile(target_cell):
 		return false
 
-	#for unit_on_board: Unit in get_parent().all_units:
-		#if unit_on_board.cell == target_cell:
-			#return false
-#
-	#return true
 	return not get_parent().all_units.any(func(x: Unit): return x.cell == target_cell)
 
 
