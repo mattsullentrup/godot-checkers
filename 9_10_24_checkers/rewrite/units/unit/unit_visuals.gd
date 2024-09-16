@@ -16,6 +16,11 @@ func _draw() -> void:
 
 	if _parent.get_parent().selected_unit == _parent:
 		draw_circle(OFFSET, RADIUS, Color.YELLOW, false, WIDTH, true)
+		for move in _parent.available_moves:
+			draw_circle(
+					Globals.movement_vectors.get(move) * Globals.CELL_SIZE + OFFSET,
+					RADIUS, Color.AQUA, false, WIDTH, true
+			)
 	elif _parent.can_move:
 		draw_circle(OFFSET, RADIUS, Color.WHITE_SMOKE, false, WIDTH, true)
 

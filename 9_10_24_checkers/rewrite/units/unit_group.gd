@@ -68,25 +68,27 @@ func _end_turn() -> void:
 
 func _get_moveable_units() -> void:
 	for unit: Unit in units:
+		unit.available_moves.clear()
 		if _can_unit_move(unit, unit.directions):
 			moveable_units.append(unit)
 			unit.can_move = true
 
 
 func _can_unit_move(unit: Unit, directions: Array[Globals.Direction]) -> bool:
-	var can_move_either_direction: Array[bool]
+	#var can_move_either_direction: Array[bool]
 	for direction in directions:
 		var target_cell = unit.cell + Globals.movement_vectors.get(direction)
 		if (
 				get_parent().all_units.any(func(x: Unit) -> bool: return x.cell == target_cell)
 				or not _validate_tile(target_cell)
 		):
-			can_move_either_direction.append(false)
+			#can_move_either_direction.append(false)
 			continue
 
-		can_move_either_direction.append(true)
+		#can_move_either_direction.append(true)
+		unit.available_moves.append(direction)
 
-	return true in can_move_either_direction
+	return unit.available_moves.size() > 0
 
 
 func _validate_tile(tile_pos) -> bool:
