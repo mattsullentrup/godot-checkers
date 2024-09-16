@@ -48,7 +48,6 @@ func _disconnect_selected_unit_signal() -> void:
 func take_turn() -> void:
 	if selected_unit:
 		_disconnect_selected_unit_signal()
-	EventBus.clear_cell_highlights.emit()
 	selected_unit = null
 
 	for unit: Unit in moveable_units:
