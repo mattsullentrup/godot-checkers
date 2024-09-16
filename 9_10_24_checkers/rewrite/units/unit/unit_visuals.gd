@@ -6,6 +6,7 @@ const INITIAL_RADIUS = 48
 const WIDTH = 5
 @warning_ignore("integer_division")
 const OFFSET = Vector2i(Globals.CELL_SIZE / 2, Globals.CELL_SIZE / 2)
+const AVAILABLE_CELL_COLOR = Color("c8f294")
 
 var radius: float = INITIAL_RADIUS
 var _color: Color
@@ -38,7 +39,7 @@ func _draw() -> void:
 			var local_pos = Vector2i(to_local(world_pos))
 			draw_circle(
 					local_pos + OFFSET,
-					INITIAL_RADIUS, Color.AQUA, false, WIDTH, true
+					INITIAL_RADIUS, AVAILABLE_CELL_COLOR, false, WIDTH, true
 			)
 	elif _parent.can_move:
 		draw_circle(OFFSET, radius, Color.WHITE_SMOKE, false, WIDTH, true)
