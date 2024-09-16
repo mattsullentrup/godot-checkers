@@ -18,6 +18,10 @@ var tween: Tween
 
 
 func move(new_cell: Vector2i) -> void:
+	#available_cells.sort_custom(
+			#func(a, b): return cell.distance_squared_to(a) > cell.distance_squared_to(b)
+	#)
+
 	if tween:
 		tween.kill()
 	tween = create_tween()

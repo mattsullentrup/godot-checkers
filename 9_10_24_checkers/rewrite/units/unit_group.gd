@@ -86,15 +86,21 @@ func _get_moveable_units() -> void:
 		for direction in unit.directions:
 			var movement_direction: Vector2i = Globals.movement_vectors.get(direction)
 			var target_cell = unit.cell + movement_direction
-			if _is_cell_available(unit, movement_direction, target_cell):
-				moveable_units.append(unit)
-				unit.can_move = true
-				if unit.can_jump:
-					jumpable_units.append(unit)
-					for cell in unit.available_cells:
-						var squared_distance = unit.cell.distance_squared_to(cell)
-						if squared_distance == 2:
-							unit.available_cells.erase(cell)
+			if not _is_cell_available(unit, movement_direction, target_cell):
+				continue
+
+			moveable_units.append(unit)
+			unit.can_move = true
+			if not unit.can_jump:
+				continue
+
+			jumpable_units.append(unit)
+			for cell in unit.available_cells:
+				var squared_distance = unit.cell.distance_squared_to(cell)
+				if not squared_distance == 2:
+					continue
+
+				unit.available_cells.erase(cell)
 
 
 func _is_cell_available(unit: Unit, initial_direction: Vector2i, target_cell: Vector2i) -> bool:
@@ -109,17 +115,16 @@ func _is_cell_available(unit: Unit, initial_direction: Vector2i, target_cell: Ve
 			return false
 		else:
 			var new_target_cell = target_cell + initial_direction
-			if _can_jump_to_cell(unit, new_target_cell, unit_on_board.cell):
-				unit.available_cells.append(new_target_cell)
-				unit.can_jump = true
-				_check_for_multi_jumps(unit, new_target_cell)
-				return true
+			if not _can_jump_to_cell(unit, new_target_cell, unit_on_board.cell):
+				return false
 
-			return false
+			unit.available_cells.append(new_target_cell)
+			unit.can_jump = true
+			_check_for_multi_jumps(unit, new_target_cell)
+			return true
 
 	# Can make a normal move
 	unit.available_cells.append(target_cell)
-
 	return unit.available_cells.size() > 0
 
 
