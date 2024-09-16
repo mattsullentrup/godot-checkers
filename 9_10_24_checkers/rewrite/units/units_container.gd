@@ -50,10 +50,10 @@ func start_battle() -> void:
 
 
 func _on_turn_completed(group: UnitGroup) -> void:
-	if group.get_active_units().size() > 1:
+	if group.units.size() > 1:
 		_step_turn()
 	else:
-		battle_over.emit(_player_group.get_active_units().size() > 0)
+		battle_over.emit(_player_group.units.size() > 0)
 
 
 func _step_turn() -> void:

@@ -37,11 +37,11 @@ func set_selected_unit(unit: Unit) -> void:
 
 
 func _connect_selected_unit_signal() -> void:
-	selected_unit.movement_completed.connect(_on_movement_completed)
+	selected_unit.movement_completed.connect(_on_unit_movement_completed)
 
 
 func _disconnect_selected_unit_signal() -> void:
-	selected_unit.movement_completed.disconnect(_on_movement_completed)
+	selected_unit.movement_completed.disconnect(_on_unit_movement_completed)
 
 
 func take_turn() -> void:
@@ -63,6 +63,9 @@ func take_turn() -> void:
 func _end_turn() -> void:
 	_disconnect_selected_unit_signal()
 	selected_unit = null
+	for unit: Unit in moveable_units:
+		unit.can_move = false
+	moveable_units.clear()
 	turn_completed.emit(self)
 
 
@@ -104,5 +107,5 @@ func _on_unit_defeated() -> void:
 		defeated.emit()
 
 
-func _on_movement_completed() -> void:
-	pass
+func _on_unit_movement_completed() -> void:
+	_end_turn()
