@@ -10,7 +10,8 @@ var cell: Vector2i
 var directions: Array[Globals.Direction]
 var available_cells: Array[Vector2i]
 var color: Color
-var can_move := false
+var can_move: bool
+var can_jump: bool
 var tween: Tween
 
 @onready var _unit_visuals: UnitVisuals = %UnitVisuals

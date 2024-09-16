@@ -78,6 +78,10 @@ func _get_moveable_units() -> void:
 			if _is_cell_available(unit, movement_direction, target_cell):
 				moveable_units.append(unit)
 				unit.can_move = true
+				# TODO: Add logic to check if any units can jump and if so,
+				# only allow those that can jump to move this turn
+				if unit.can_jump:
+					pass
 
 
 func _is_cell_available(unit: Unit, direction: Vector2i, target_cell: Vector2i) -> bool:
@@ -92,9 +96,19 @@ func _is_cell_available(unit: Unit, direction: Vector2i, target_cell: Vector2i) 
 			return false
 		else:
 			var new_target_cell = target_cell + direction
-			if _is_cell_jumpable(new_target_cell):
+			if _can_jump_to_cell(new_target_cell):
+				unit.available_cells.append(new_target_cell)
+				unit.can_jump = true
 				# Check for multi jumps
-				pass
+				for new_direction in unit.directions:
+					var new_movement_direction = Globals.movement_vectors.get(new_direction)
+					var even_newer_target_cell = new_movement_direction * 2 + new_target_cell
+					if _can_jump_to_cell(even_newer_target_cell):
+						unit.available_cells.append(even_newer_target_cell)
+
+				return true
+
+			return false
 
 	# Can make a normal move
 	unit.available_cells.append(target_cell)
@@ -102,7 +116,7 @@ func _is_cell_available(unit: Unit, direction: Vector2i, target_cell: Vector2i) 
 	return unit.available_cells.size() > 0
 
 
-func _is_cell_jumpable(target_cell):
+func _can_jump_to_cell(target_cell):
 	if not _validate_tile(target_cell):
 		return false
 
