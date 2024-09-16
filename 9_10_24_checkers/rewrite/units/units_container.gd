@@ -17,13 +17,19 @@ func _unhandled_input(event: InputEvent) -> void:
 		_current_mouse_cell = Navigation.world_to_cell(get_global_mouse_position())
 		if (
 				_active_group.selected_unit \
-				and _current_mouse_cell \
-				in _active_group.selected_unit.available_moves
+				and _current_mouse_cell in _active_group.selected_unit.available_moves
+				and _active_group.selected_unit.can_move == true
 		):
 			_active_group.selected_unit.move(_current_mouse_cell)
+			for unit: Unit in _active_group.moveable_units:
+				unit.can_move = false
 			return
 		for unit in _active_group.units:
-			if not unit.cell == _current_mouse_cell or unit not in _active_group.moveable_units:
+			if (
+						not unit.cell == _current_mouse_cell \
+						or unit not in _active_group.moveable_units \
+						or unit.can_move == false
+			):
 				continue
 
 			get_viewport().set_input_as_handled()
