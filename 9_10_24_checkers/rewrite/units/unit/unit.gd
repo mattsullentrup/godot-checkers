@@ -2,19 +2,26 @@ class_name Unit
 extends Node2D
 
 
-signal unit_defeated
+signal unit_defeated(unit: Unit)
 signal movement_completed
 
 var team: Globals.Team
 var cell: Vector2i
 var directions: Array[Globals.Direction]
 var available_cells: Array[Vector2i]
+var units_to_jump_over: Array[Unit]
 var color: Color
 var can_move: bool
 var can_jump: bool
 var tween: Tween
 
 @onready var _unit_visuals: UnitVisuals = %UnitVisuals
+
+
+func explode() -> void:
+	print("exploding")
+	unit_defeated.emit(self)
+	queue_free()
 
 
 func move(new_cell: Vector2i) -> void:
@@ -39,7 +46,8 @@ func move(new_cell: Vector2i) -> void:
 
 func _finish_moving(new_cell: Vector2i) -> void:
 	cell = new_cell
-	movement_completed.emit()
+	movement_completed.emit(self)
+	#jumpable_units.clear()
 
 
 func _jump_tween() -> void:

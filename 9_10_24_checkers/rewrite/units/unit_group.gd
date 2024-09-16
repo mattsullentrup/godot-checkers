@@ -67,13 +67,10 @@ func take_turn() -> void:
 func _end_turn() -> void:
 	_disconnect_selected_unit_signal()
 	selected_unit = null
-	#moveable_units.assign(moveable_units.map(func(x):
-			#x.can_move = false
-			#return x
-	#))
 	for unit: Unit in moveable_units:
 		unit.can_move = false
 		unit.can_jump = false
+		unit.units_to_jump_over.clear()
 
 	moveable_units.clear()
 	jumpable_units.clear()
@@ -120,6 +117,7 @@ func _is_cell_available(unit: Unit, initial_direction: Vector2i, target_cell: Ve
 
 			unit.available_cells.append(new_target_cell)
 			unit.can_jump = true
+			unit.units_to_jump_over.append(unit_on_board)
 			_check_for_multi_jumps(unit, new_target_cell)
 			return true
 
@@ -134,11 +132,16 @@ func _check_for_multi_jumps(unit: Unit, starting_cell: Vector2i) -> void:
 		var jumped_cell = movement_direction + starting_cell
 		var new_target_cell = jumped_cell + movement_direction
 		if _can_jump_to_cell(unit, new_target_cell, jumped_cell):
+			var jumped_unit: Unit
+			for unit_on_board: Unit in get_parent().all_units:
+				if unit_on_board.cell == jumped_cell:
+					unit.units_to_jump_over.append(unit_on_board)
+					break
 			unit.available_cells.append(new_target_cell)
 			_check_for_multi_jumps(unit, new_target_cell)
 
 
-func _can_jump_to_cell(unit: Unit, target_cell: Vector2i, jumped_cell: Vector2i):
+func _can_jump_to_cell(unit: Unit, target_cell: Vector2i, jumped_cell: Vector2i) -> bool:
 	if not _validate_tile(target_cell):
 		return false
 
@@ -160,10 +163,13 @@ func _validate_tile(tile_pos) -> bool:
 	return true
 
 
-func _on_unit_defeated() -> void:
-	if get_children().size() == 0:
+func _on_unit_defeated(unit: Unit) -> void:
+	units.erase(unit)
+	if units.size() == 0:
 		defeated.emit()
 
 
-func _on_unit_movement_completed() -> void:
+func _on_unit_movement_completed(unit: Unit) -> void:
+	for enemy_unit: Unit in unit.units_to_jump_over:
+		enemy_unit.explode()
 	_end_turn()
