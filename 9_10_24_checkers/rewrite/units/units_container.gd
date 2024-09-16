@@ -15,8 +15,13 @@ var _current_mouse_cell: Vector2i
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("left_click"):
 		_current_mouse_cell = Navigation.world_to_cell(get_global_mouse_position())
-		if _active_group.selected_unit and _current_mouse_cell in _active_group.selected_unit.available_moves:
-			pass
+		if (
+				_active_group.selected_unit \
+				and _current_mouse_cell \
+				in _active_group.selected_unit.available_moves
+		):
+			_active_group.selected_unit.move(_current_mouse_cell)
+			return
 		for unit in _active_group.units:
 			if not unit.cell == _current_mouse_cell or unit not in _active_group.moveable_units:
 				continue
