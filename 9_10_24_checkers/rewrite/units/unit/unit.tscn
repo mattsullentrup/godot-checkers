@@ -7,4 +7,5 @@
 script = ExtResource("1_w7lj1")
 
 [node name="UnitVisuals" type="Node2D" parent="."]
+unique_name_in_owner = true
 script = ExtResource("2_80clf")
