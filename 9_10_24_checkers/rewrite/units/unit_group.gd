@@ -91,6 +91,10 @@ func _get_moveable_units() -> void:
 				unit.can_move = true
 				if unit.can_jump:
 					jumpable_units.append(unit)
+					for cell in unit.available_cells:
+						var squared_distance = unit.cell.distance_squared_to(cell)
+						if squared_distance == 2:
+							unit.available_cells.erase(cell)
 
 
 func _is_cell_available(unit: Unit, initial_direction: Vector2i, target_cell: Vector2i) -> bool:
@@ -105,7 +109,7 @@ func _is_cell_available(unit: Unit, initial_direction: Vector2i, target_cell: Ve
 			return false
 		else:
 			var new_target_cell = target_cell + initial_direction
-			if _can_jump_to_cell(new_target_cell):
+			if _can_jump_to_cell(unit, new_target_cell, unit_on_board.cell):
 				unit.available_cells.append(new_target_cell)
 				unit.can_jump = true
 				_check_for_multi_jumps(unit, new_target_cell)
@@ -122,17 +126,23 @@ func _is_cell_available(unit: Unit, initial_direction: Vector2i, target_cell: Ve
 func _check_for_multi_jumps(unit: Unit, starting_cell: Vector2i) -> void:
 	for direction in unit.directions:
 		var movement_direction = Globals.movement_vectors.get(direction)
-		var new_target_cell = movement_direction * 2 + starting_cell
-		if _can_jump_to_cell(new_target_cell):
+		var jumped_cell = movement_direction + starting_cell
+		var new_target_cell = jumped_cell + movement_direction
+		if _can_jump_to_cell(unit, new_target_cell, jumped_cell):
 			unit.available_cells.append(new_target_cell)
 			_check_for_multi_jumps(unit, new_target_cell)
 
 
-func _can_jump_to_cell(target_cell):
+func _can_jump_to_cell(unit: Unit, target_cell: Vector2i, jumped_cell: Vector2i):
 	if not _validate_tile(target_cell):
 		return false
 
-	return not get_parent().all_units.any(func(x: Unit): return x.cell == target_cell)
+	if get_parent().all_units.any(func(x: Unit): return x.cell == target_cell):
+		return false
+
+	return get_parent().all_units.any(
+			func(x: Unit): return x.cell == jumped_cell and not x.team == unit.team
+	)
 
 
 func _validate_tile(tile_pos) -> bool:
