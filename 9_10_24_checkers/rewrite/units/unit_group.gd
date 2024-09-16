@@ -132,7 +132,6 @@ func _check_for_multi_jumps(unit: Unit, starting_cell: Vector2i) -> void:
 		var jumped_cell = movement_direction + starting_cell
 		var new_target_cell = jumped_cell + movement_direction
 		if _can_jump_to_cell(unit, new_target_cell, jumped_cell):
-			var jumped_unit: Unit
 			for unit_on_board: Unit in get_parent().all_units:
 				if unit_on_board.cell == jumped_cell:
 					unit.units_to_jump_over.append(unit_on_board)

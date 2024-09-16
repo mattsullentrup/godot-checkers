@@ -8,13 +8,25 @@ const WIDTH = 5
 const OFFSET = Vector2i(Globals.CELL_SIZE / 2, Globals.CELL_SIZE / 2)
 
 var radius: float = INITIAL_RADIUS
+var _color: Color
 
 @onready var _parent: Unit = get_parent()
+@onready var _particles: GPUParticles2D = $"../GPUParticles2D"
+
+
+func _ready() -> void:
+	var particle_pos: Vector2i = _particles.global_position
+	if particle_pos:
+		particle_pos += OFFSET
+	_particles.global_position = particle_pos
 
 
 func _draw() -> void:
-	var color: Color = get_parent().color
-	draw_circle(OFFSET, radius, color, true, -1, true)
+	_color = _parent.color
+	if _particles.emitting:
+		return
+
+	draw_circle(OFFSET, radius, _color, true, -1, true)
 
 	if _parent.get_parent().selected_unit == _parent:
 		draw_circle(OFFSET, radius, Color.YELLOW, false, WIDTH, true)
@@ -34,3 +46,9 @@ func _draw() -> void:
 
 func _process(_delta: float) -> void:
 	queue_redraw()
+
+
+func explode() -> void:
+	_particles.process_material.color = _color
+	_particles.emitting = true
+	await _particles.finished

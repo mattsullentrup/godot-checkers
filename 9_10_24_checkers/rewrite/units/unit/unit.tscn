@@ -1,7 +1,30 @@
-[gd_scene load_steps=3 format=3 uid="uid://do0uo4ytei58b"]
+[gd_scene load_steps=6 format=3 uid="uid://do0uo4ytei58b"]
 
 [ext_resource type="Script" path="res://rewrite/units/unit/unit.gd" id="1_w7lj1"]
 [ext_resource type="Script" path="res://rewrite/units/unit/unit_visuals.gd" id="2_80clf"]
+
+[sub_resource type="Curve" id="Curve_nobl5"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 1.4, 0, 0]
+point_count = 2
+metadata/_snap_enabled = true
+
+[sub_resource type="CurveTexture" id="CurveTexture_kuaio"]
+curve = SubResource("Curve_nobl5")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_k3b2s"]
+emission_shape = 2
+emission_sphere_radius = 22.14
+angle_min = -108.4
+angle_max = 122.6
+spread = 180.0
+initial_velocity_min = 60.61
+initial_velocity_max = 233.77
+angular_velocity_min = -185.8
+angular_velocity_max = 214.47
+gravity = Vector3(0, 0, 0)
+scale_min = 5.0
+scale_max = 10.0
+scale_curve = SubResource("CurveTexture_kuaio")
 
 [node name="Unit" type="Node2D"]
 script = ExtResource("1_w7lj1")
@@ -9,3 +32,12 @@ script = ExtResource("1_w7lj1")
 [node name="UnitVisuals" type="Node2D" parent="."]
 unique_name_in_owner = true
 script = ExtResource("2_80clf")
+
+[node name="GPUParticles2D" type="GPUParticles2D" parent="."]
+z_index = 1
+emitting = false
+amount = 64
+process_material = SubResource("ParticleProcessMaterial_k3b2s")
+lifetime = 2.0
+one_shot = true
+explosiveness = 1.0

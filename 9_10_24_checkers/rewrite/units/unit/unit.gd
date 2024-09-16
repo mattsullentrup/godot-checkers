@@ -21,6 +21,8 @@ var tween: Tween
 func explode() -> void:
 	print("exploding")
 	unit_defeated.emit(self)
+	_unit_visuals.explode()
+	await $GPUParticles2D.finished
 	queue_free()
 
 
