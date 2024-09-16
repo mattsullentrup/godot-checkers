@@ -13,6 +13,7 @@ const UNIT = preload("res://rewrite/units/unit/unit.tscn")
 var team: Globals.Team
 var units: Array[Unit]
 var moveable_units: Array[Unit]
+var jumpable_units: Array[Unit]
 var selected_unit: Unit
 
 
@@ -54,10 +55,10 @@ func take_turn() -> void:
 		unit.can_move = false
 
 	_get_moveable_units()
-	#var cells: Array = moveable_units.map(func(unit: Unit) -> Vector2i: return unit.cell)
-	#var typed_cells: Array[Vector2i]
-	#typed_cells.assign(cells)
-	#EventBus.show_selectable_player_units.emit(typed_cells)
+
+	if not jumpable_units.is_empty():
+		moveable_units.clear
+		moveable_units = jumpable_units.duplicate()
 
 
 func _end_turn() -> void:
@@ -81,7 +82,7 @@ func _get_moveable_units() -> void:
 				# TODO: Add logic to check if any units can jump and if so,
 				# only allow those that can jump to move this turn
 				if unit.can_jump:
-					pass
+					jumpable_units.append(unit)
 
 
 func _is_cell_available(unit: Unit, direction: Vector2i, target_cell: Vector2i) -> bool:
