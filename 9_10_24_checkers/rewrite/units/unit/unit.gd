@@ -27,6 +27,7 @@ func explode() -> void:
 
 
 func move(new_cell: Vector2i) -> void:
+	z_index += 1
 	#available_cells.sort_custom(
 			#func(a, b): return cell.distance_squared_to(a) > cell.distance_squared_to(b)
 	#)
@@ -49,7 +50,7 @@ func move(new_cell: Vector2i) -> void:
 func _finish_moving(new_cell: Vector2i) -> void:
 	cell = new_cell
 	movement_completed.emit(self)
-	#jumpable_units.clear()
+	z_index -= 1
 
 
 func _jump_tween() -> void:
