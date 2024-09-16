@@ -71,7 +71,7 @@ func _end_turn() -> void:
 
 func _get_moveable_units() -> void:
 	for unit: Unit in units:
-		unit.available_moves.clear()
+		unit.available_cells.clear()
 		if _can_unit_move(unit, unit.directions):
 			moveable_units.append(unit)
 			unit.can_move = true
@@ -81,16 +81,18 @@ func _can_unit_move(unit: Unit, directions: Array[Globals.Direction]) -> bool:
 	for direction in directions:
 		var movement_direction: Vector2i = Globals.movement_vectors.get(direction)
 		var target_cell = unit.cell + movement_direction
-		if (
-				get_parent().all_units.any(func(x: Unit) -> bool: return x.cell == target_cell)
-				or not _validate_tile(target_cell)
-		):
+		if not _validate_tile(target_cell):
 			continue
 
-		unit.available_moves.append(movement_direction + unit.cell)
+		# INFO: if another unit from the enemy team is on the target cell
+		if get_parent().all_units.any(
+				func(x: Unit) -> bool: return x.cell == target_cell and x.team == unit.team
+		):
+			return _can_unit_move(unit, directions)
 
-	return unit.available_moves.size() > 0
+		unit.available_cells.append(movement_direction + unit.cell)
 
+	return unit.available_cells.size() > 0
 
 func _validate_tile(tile_pos) -> bool:
 	if tile_pos.x < 0 or tile_pos.x > (Globals.GRID_SIZE - 1):

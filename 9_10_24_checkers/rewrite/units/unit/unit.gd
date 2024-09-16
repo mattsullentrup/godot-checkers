@@ -8,7 +8,7 @@ signal movement_completed
 var team: Globals.Team
 var cell: Vector2i
 var directions: Array[Globals.Direction]
-var available_moves: Array[Vector2i]
+var available_cells: Array[Vector2i]
 var color: Color
 var can_move := false
 var tween: Tween
@@ -22,9 +22,9 @@ func move(new_cell: Vector2i) -> void:
 	tween = create_tween()
 
 	var world_pos = Navigation.cell_to_world(new_cell)
-	tween.tween_property(self, "global_position", Vector2(world_pos), 1) \
+	tween.tween_property(self, "global_position", Vector2(world_pos), .5) \
 			.set_trans(Tween.TRANS_QUAD) \
-			.set_ease(Tween.EASE_IN_OUT)
+			.set_ease(Tween.EASE_OUT)
 
 	tween.tween_interval(0.1)
 	#tween.tween_callback(_finish_moving.bind(new_cell))

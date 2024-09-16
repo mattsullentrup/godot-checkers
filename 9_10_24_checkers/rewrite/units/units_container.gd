@@ -17,7 +17,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		_current_mouse_cell = Navigation.world_to_cell(get_global_mouse_position())
 		if (
 				_active_group.selected_unit \
-				and _current_mouse_cell in _active_group.selected_unit.available_moves
+				and _current_mouse_cell in _active_group.selected_unit.available_cells
 				and _active_group.selected_unit.can_move == true
 		):
 			_active_group.selected_unit.move(_current_mouse_cell)
@@ -75,6 +75,5 @@ func _step_turn() -> void:
 
 func _get_all_units() -> void:
 	all_units.clear()
-	#all_units = _player_group.units.duplicate()
-	all_units.assign(_player_group.units)
+	all_units = _player_group.units.duplicate()
 	all_units.append_array(_opponent_group.units.duplicate())

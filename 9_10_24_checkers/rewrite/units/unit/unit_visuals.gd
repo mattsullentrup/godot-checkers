@@ -21,7 +21,7 @@ func _draw() -> void:
 		if _parent.tween and _parent.tween.is_running():
 			return
 
-		for move in _parent.available_moves:
+		for move in _parent.available_cells:
 			var world_pos = Navigation.cell_to_world(move)
 			var local_pos = Vector2i(to_local(world_pos))
 			draw_circle(
