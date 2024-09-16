@@ -57,7 +57,7 @@ func take_turn() -> void:
 	_get_moveable_units()
 
 	if not jumpable_units.is_empty():
-		moveable_units.clear
+		moveable_units.clear()
 		moveable_units = jumpable_units.duplicate()
 
 
@@ -79,13 +79,11 @@ func _get_moveable_units() -> void:
 			if _is_cell_available(unit, movement_direction, target_cell):
 				moveable_units.append(unit)
 				unit.can_move = true
-				# TODO: Add logic to check if any units can jump and if so,
-				# only allow those that can jump to move this turn
 				if unit.can_jump:
 					jumpable_units.append(unit)
 
 
-func _is_cell_available(unit: Unit, direction: Vector2i, target_cell: Vector2i) -> bool:
+func _is_cell_available(unit: Unit, initial_direction: Vector2i, target_cell: Vector2i) -> bool:
 	if not _validate_tile(target_cell):
 		return false
 
@@ -96,17 +94,11 @@ func _is_cell_available(unit: Unit, direction: Vector2i, target_cell: Vector2i) 
 		if unit_on_board.team == unit.team:
 			return false
 		else:
-			var new_target_cell = target_cell + direction
+			var new_target_cell = target_cell + initial_direction
 			if _can_jump_to_cell(new_target_cell):
 				unit.available_cells.append(new_target_cell)
 				unit.can_jump = true
-				# Check for multi jumps
-				for new_direction in unit.directions:
-					var new_movement_direction = Globals.movement_vectors.get(new_direction)
-					var even_newer_target_cell = new_movement_direction * 2 + new_target_cell
-					if _can_jump_to_cell(even_newer_target_cell):
-						unit.available_cells.append(even_newer_target_cell)
-
+				_check_for_multi_jumps(unit, new_target_cell)
 				return true
 
 			return false
@@ -117,15 +109,25 @@ func _is_cell_available(unit: Unit, direction: Vector2i, target_cell: Vector2i) 
 	return unit.available_cells.size() > 0
 
 
+func _check_for_multi_jumps(unit: Unit, starting_cell: Vector2i) -> void:
+	for direction in unit.directions:
+		var movement_direction = Globals.movement_vectors.get(direction)
+		var new_target_cell = movement_direction * 2 + starting_cell
+		if _can_jump_to_cell(new_target_cell):
+			unit.available_cells.append(new_target_cell)
+			_check_for_multi_jumps(unit, new_target_cell)
+
+
 func _can_jump_to_cell(target_cell):
 	if not _validate_tile(target_cell):
 		return false
 
-	for unit_on_board: Unit in get_parent().all_units:
-		if unit_on_board.cell == target_cell:
-			return false
-
-	return true
+	#for unit_on_board: Unit in get_parent().all_units:
+		#if unit_on_board.cell == target_cell:
+			#return false
+#
+	#return true
+	return not get_parent().all_units.any(func(x: Unit): return x.cell == target_cell)
 
 
 func _validate_tile(tile_pos) -> bool:
