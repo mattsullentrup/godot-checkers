@@ -72,27 +72,46 @@ func _end_turn() -> void:
 func _get_moveable_units() -> void:
 	for unit: Unit in units:
 		unit.available_cells.clear()
-		if _can_unit_move(unit, unit.directions):
-			moveable_units.append(unit)
-			unit.can_move = true
+		for direction in unit.directions:
+			var movement_direction: Vector2i = Globals.movement_vectors.get(direction)
+			var target_cell = unit.cell + movement_direction
+			if _is_cell_available(unit, movement_direction, target_cell):
+				moveable_units.append(unit)
+				unit.can_move = true
 
 
-func _can_unit_move(unit: Unit, directions: Array[Globals.Direction]) -> bool:
-	for direction in directions:
-		var movement_direction: Vector2i = Globals.movement_vectors.get(direction)
-		var target_cell = unit.cell + movement_direction
-		if not _validate_tile(target_cell):
+func _is_cell_available(unit: Unit, direction: Vector2i, target_cell: Vector2i) -> bool:
+	if not _validate_tile(target_cell):
+		return false
+
+	for unit_on_board: Unit in get_parent().all_units:
+		if not unit_on_board.cell == target_cell:
 			continue
 
-		# INFO: if another unit from the enemy team is on the target cell
-		if get_parent().all_units.any(
-				func(x: Unit) -> bool: return x.cell == target_cell and x.team == unit.team
-		):
-			return _can_unit_move(unit, directions)
+		if unit_on_board.team == unit.team:
+			return false
+		else:
+			var new_target_cell = target_cell + direction
+			if _is_cell_jumpable(new_target_cell):
+				# Check for multi jumps
+				pass
 
-		unit.available_cells.append(movement_direction + unit.cell)
+	# Can make a normal move
+	unit.available_cells.append(target_cell)
 
 	return unit.available_cells.size() > 0
+
+
+func _is_cell_jumpable(target_cell):
+	if not _validate_tile(target_cell):
+		return false
+
+	for unit_on_board: Unit in get_parent().all_units:
+		if unit_on_board.cell == target_cell:
+			return false
+
+	return true
+
 
 func _validate_tile(tile_pos) -> bool:
 	if tile_pos.x < 0 or tile_pos.x > (Globals.GRID_SIZE - 1):
