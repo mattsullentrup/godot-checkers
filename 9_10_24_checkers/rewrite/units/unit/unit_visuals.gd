@@ -17,8 +17,10 @@ func _draw() -> void:
 	if _parent.get_parent().selected_unit == _parent:
 		draw_circle(OFFSET, RADIUS, Color.YELLOW, false, WIDTH, true)
 		for move in _parent.available_moves:
+			var world_pos = Navigation.cell_to_world(move)
+			var local_pos = Vector2i(to_local(world_pos))
 			draw_circle(
-					Globals.movement_vectors.get(move) * Globals.CELL_SIZE + OFFSET,
+					local_pos + OFFSET,
 					RADIUS, Color.AQUA, false, WIDTH, true
 			)
 	elif _parent.can_move:

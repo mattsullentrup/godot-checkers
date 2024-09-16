@@ -9,7 +9,7 @@ func world_to_cell(pos: Vector2) -> Vector2i:
 	)
 
 
-func cell_to_world(cell: Vector2) -> Vector2:
+func cell_to_world(cell: Vector2i) -> Vector2i:
 	return cell * Globals.CELL_SIZE
 
 

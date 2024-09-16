@@ -77,7 +77,8 @@ func _get_moveable_units() -> void:
 func _can_unit_move(unit: Unit, directions: Array[Globals.Direction]) -> bool:
 	#var can_move_either_direction: Array[bool]
 	for direction in directions:
-		var target_cell = unit.cell + Globals.movement_vectors.get(direction)
+		var movement_direction: Vector2i = Globals.movement_vectors.get(direction)
+		var target_cell = unit.cell + movement_direction
 		if (
 				get_parent().all_units.any(func(x: Unit) -> bool: return x.cell == target_cell)
 				or not _validate_tile(target_cell)
@@ -86,7 +87,7 @@ func _can_unit_move(unit: Unit, directions: Array[Globals.Direction]) -> bool:
 			continue
 
 		#can_move_either_direction.append(true)
-		unit.available_moves.append(direction)
+		unit.available_moves.append(movement_direction + unit.cell)
 
 	return unit.available_moves.size() > 0
 
