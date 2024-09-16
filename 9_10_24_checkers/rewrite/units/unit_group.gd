@@ -7,7 +7,7 @@ signal defeated
 
 const UNIT = preload("res://rewrite/units/unit/unit.tscn")
 
-@export var team_color: Color
+@export var team_color: Color = Color.MIDNIGHT_BLUE
 @export var _directions: Array[Globals.Direction]
 
 var team: Globals.Team

@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://rewrite/level/level.gd" id="1_25vf3"]
 [ext_resource type="Script" path="res://rewrite/level/level_generator.gd" id="1_pjm2a"]
 [ext_resource type="Script" path="res://rewrite/units/units_container.gd" id="3_tg5mk"]
-[ext_resource type="Script" path="res://rewrite/units/unit_group.gd" id="4_a64pc"]
+[ext_resource type="PackedScene" uid="uid://cikidu87xgf1b" path="res://rewrite/units/unit_group.tscn" id="4_8u215"]
 [ext_resource type="Script" path="res://rewrite/ui/ui.gd" id="6_rd7dn"]
 
 [node name="Level" type="Node2D"]
@@ -19,16 +19,13 @@ script = ExtResource("1_pjm2a")
 unique_name_in_owner = true
 script = ExtResource("3_tg5mk")
 
-[node name="PlayerGroup" type="Node2D" parent="Units"]
+[node name="PlayerGroup" parent="Units" instance=ExtResource("4_8u215")]
 unique_name_in_owner = true
-script = ExtResource("4_a64pc")
-team_color = Color(0.098, 0.098, 0.44, 1)
 _directions = Array[int]([0, 1])
 
-[node name="OpponentGroup" type="Node2D" parent="Units"]
+[node name="OpponentGroup" parent="Units" instance=ExtResource("4_8u215")]
 unique_name_in_owner = true
-script = ExtResource("4_a64pc")
-team_color = Color(0.78, 0.082, 0.052, 1)
+team_color = Color(0.780392, 0.0823529, 0.521569, 1)
 _directions = Array[int]([2, 3])
 
 [node name="UI" type="CanvasLayer" parent="."]
