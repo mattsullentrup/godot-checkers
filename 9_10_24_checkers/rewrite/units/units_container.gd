@@ -13,17 +13,17 @@ var _current_mouse_cell: Vector2i
 
 
 func _unhandled_input(event: InputEvent) -> void:
-	if not event.is_action_pressed("click"):
-		return
+	if event.is_action_pressed("left_click"):
+		_current_mouse_cell = Navigation.world_to_cell(get_global_mouse_position())
+		for unit in _active_group.units:
+			if not unit.cell == _current_mouse_cell or unit not in _active_group.moveable_units:
+				continue
 
-	_current_mouse_cell = Navigation.world_to_cell(get_global_mouse_position())
-	for unit in _active_group.units:
-		if not unit.cell == _current_mouse_cell or unit not in _active_group.moveable_units:
-			continue
-
-		get_viewport().set_input_as_handled()
-		_active_group.set_current_unit(unit)
-		return
+			get_viewport().set_input_as_handled()
+			_active_group.set_selected_unit(unit)
+			return
+	elif event.is_action_pressed("right_click"):
+		_active_group.set_selected_unit(null)
 
 
 func init() -> void:
@@ -62,5 +62,6 @@ func _step_turn() -> void:
 
 func _get_all_units() -> void:
 	all_units.clear()
-	all_units = _player_group.units.duplicate()
+	#all_units = _player_group.units.duplicate()
+	all_units.assign(_player_group.units)
 	all_units.append_array(_opponent_group.units.duplicate())

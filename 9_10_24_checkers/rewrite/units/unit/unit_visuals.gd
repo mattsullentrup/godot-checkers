@@ -14,7 +14,9 @@ func _draw() -> void:
 	var color: Color = get_parent().color
 	draw_circle(OFFSET, RADIUS, color, true, -1, true)
 
-	if _parent.can_move:
+	if _parent.get_parent().selected_unit == _parent:
+		draw_circle(OFFSET, RADIUS, Color.YELLOW, false, WIDTH, true)
+	elif _parent.can_move:
 		draw_circle(OFFSET, RADIUS, Color.WHITE_SMOKE, false, WIDTH, true)
 
 
