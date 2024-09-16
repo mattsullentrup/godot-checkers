@@ -1,6 +1,11 @@
-[gd_scene load_steps=2 format=3 uid="uid://cikidu87xgf1b"]
+[gd_scene load_steps=3 format=3 uid="uid://cikidu87xgf1b"]
 
 [ext_resource type="Script" path="res://rewrite/units/unit_group.gd" id="1_va18p"]
+[ext_resource type="Script" path="res://rewrite/units/unit_movement.gd" id="2_0vgtj"]
 
 [node name="UnitGroup" type="Node2D"]
 script = ExtResource("1_va18p")
+
+[node name="UnitMovement" type="Node2D" parent="."]
+unique_name_in_owner = true
+script = ExtResource("2_0vgtj")

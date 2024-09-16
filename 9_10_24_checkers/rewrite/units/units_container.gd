@@ -41,12 +41,14 @@ func _unhandled_input(event: InputEvent) -> void:
 
 func init() -> void:
 	_player_group.team = Globals.Team.PLAYER
-	_player_group.init()
+	_player_group.all_units = all_units
 	_player_group.turn_completed.connect(_on_turn_completed)
+	_player_group.init()
 
 	_opponent_group.team = Globals.Team.OPPONENT
-	_opponent_group.init()
+	_opponent_group.all_units = all_units
 	_opponent_group.turn_completed.connect(_on_turn_completed)
+	_opponent_group.init()
 
 
 func start_battle() -> void:
