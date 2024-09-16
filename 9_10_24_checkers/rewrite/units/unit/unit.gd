@@ -11,11 +11,14 @@ var directions: Array[Globals.Direction]
 var available_moves: Array[Vector2i]
 var color: Color
 var can_move := false
+var tween: Tween
 
 
 func move(new_cell: Vector2i) -> void:
+	if tween:
+		tween.kill()
+	tween = create_tween()
 	var world_pos = Navigation.cell_to_world(new_cell)
-	var tween := create_tween()
 	tween.tween_property(self, "global_position", Vector2(world_pos), 1)
 	tween.tween_callback(_finish_moving.bind(new_cell))
 
