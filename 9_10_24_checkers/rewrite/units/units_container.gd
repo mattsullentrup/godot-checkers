@@ -74,7 +74,6 @@ func _on_turn_completed(group: UnitGroup) -> void:
 
 
 func _step_turn() -> void:
-
 	if _active_group == _player_group:
 		_active_group = _opponent_group
 		_opponent_group.take_turn()

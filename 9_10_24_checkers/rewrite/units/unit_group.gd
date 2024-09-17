@@ -75,6 +75,7 @@ func _end_turn() -> void:
 		unit.can_move = false
 		unit.can_jump = false
 		unit.jump_paths.clear()
+		unit.available_cells.clear()
 
 	moveable_units.clear()
 	jumpable_units.clear()

@@ -17,7 +17,8 @@ var jump_paths: Array[Array]
 var color: Color
 var can_move: bool
 var can_jump: bool
-var tween: Tween
+var normal_move_tween: Tween
+var jump_path_tween: Tween
 
 @onready var _unit_visuals: UnitVisuals = %UnitVisuals
 
@@ -32,40 +33,43 @@ func explode() -> void:
 func move(new_cell: Vector2i) -> void:
 	z_index += 1
 
-	#available_cells.sort_custom(
-			#func(a, b): return cell.distance_squared_to(a) > cell.distance_squared_to(b)
-	#)
-
 	if can_jump:
-		for path: Array in jump_paths:
-			for data: JumpData in path:
-				if not data.target_cell == new_cell:
-					continue
-
-				_jump_tween_through_path(path)
+		_find_jump_path(new_cell)
 	else:
-		if tween:
-			tween.kill()
-		tween = create_tween()
-		_move_tween(new_cell)
+		if normal_move_tween:
+			normal_move_tween.kill()
 
-	tween.tween_callback(_finish_moving.bind(new_cell))
+		normal_move_tween = create_tween()
+		_move_tween(new_cell, normal_move_tween)
+
+		normal_move_tween.tween_callback(_finish_moving.bind(new_cell))
 	#tween.finished.connect(_finish_moving.bind(new_cell))
 
+func _find_jump_path(new_cell: Vector2i) -> void:
+	for path: Array in jump_paths:
+		for data: JumpData in path:
+			if not data.target_cell == new_cell:
+				continue
 
-func _jump_tween_through_path(path: Array) -> void:
+			_jump_tween_through_path(path, new_cell)
+
+
+func _jump_tween_through_path(path: Array, new_cell: Vector2i) -> void:
 	for data: JumpData in path:
-		if tween:
-			tween.kill()
-		tween = create_tween()
+		if jump_path_tween:
+			jump_path_tween.kill()
 
-		_move_tween(data.target_cell)
-		_unit_visuals.jump_tween(tween)
-		await tween.finished
+		jump_path_tween = create_tween()
+		_move_tween(data.target_cell, jump_path_tween)
+		_unit_visuals.jump_tween(jump_path_tween)
+
+		await jump_path_tween.finished
 		data.jumped_unit.explode()
 
+	#jump_path_tween.tween_callback(_finish_moving.bind(new_cell))
+	_finish_moving(new_cell)
 
-func _move_tween(new_cell) -> void:
+func _move_tween(new_cell, tween) -> void:
 	var world_pos = Navigation.cell_to_world(new_cell)
 	tween.tween_property(self, "global_position", Vector2(world_pos), MOVEMENT_DURATION) \
 			.set_trans(Tween.TRANS_QUAD) \

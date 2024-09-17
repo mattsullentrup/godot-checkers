@@ -34,7 +34,10 @@ func _draw() -> void:
 
 	if _parent.get_parent().selected_unit == _parent:
 		draw_circle(OFFSET, _radius, Color.YELLOW, false, WIDTH, true)
-		if _parent.tween and _parent.tween.is_running():
+		if (
+				_parent.jump_path_tween and _parent.jump_path_tween.is_running() \
+				or _parent.normal_move_tween and _parent.normal_move_tween.is_running()
+		):
 			return
 
 		for move in _parent.available_cells:
