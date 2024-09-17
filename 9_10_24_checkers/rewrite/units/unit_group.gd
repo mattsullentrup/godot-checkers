@@ -83,6 +83,7 @@ func _end_turn() -> void:
 
 func _on_unit_defeated(unit: Unit) -> void:
 	units.erase(unit)
+	all_units.erase(unit)
 	if units.size() == 0:
 		defeated.emit()
 

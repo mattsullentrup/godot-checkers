@@ -65,7 +65,6 @@ func _on_turn_completed(group: UnitGroup) -> void:
 
 
 func _step_turn() -> void:
-	_get_all_units()
 
 	if _active_group == _player_group:
 		_active_group = _opponent_group
@@ -76,6 +75,5 @@ func _step_turn() -> void:
 
 
 func _get_all_units() -> void:
-	all_units.clear()
-	all_units = _player_group.units.duplicate()
-	all_units.append_array(_opponent_group.units.duplicate())
+	all_units.assign(_player_group.units)
+	all_units.append_array(_opponent_group.units)
