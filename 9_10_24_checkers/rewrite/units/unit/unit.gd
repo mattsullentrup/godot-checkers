@@ -10,8 +10,9 @@ signal movement_completed
 var team: Globals.Team
 var cell: Vector2i
 var directions: Array[Globals.Direction]
-var available_cells: Array[Vector2i]
-var units_to_jump_over: Array[Unit]
+var normal_moves: Array[Vector2i]
+#var units_to_jump_over: Array[Unit]
+var jump_paths: Array[Dictionary]
 var color: Color
 var can_move: bool
 var can_jump: bool
@@ -30,7 +31,7 @@ func explode() -> void:
 func move(new_cell: Vector2i) -> void:
 	z_index += 1
 
-	#available_cells.sort_custom(
+	#normal_moves.sort_custom(
 			#func(a, b): return cell.distance_squared_to(a) > cell.distance_squared_to(b)
 	#)
 
@@ -42,7 +43,7 @@ func move(new_cell: Vector2i) -> void:
 		# TODO: figure out how to find a path to the target cell
 		# and loop the tween to get there
 
-		#tween.set_loops(available_cells.size())
+		#tween.set_loops(normal_moves.size())
 		_move_tween(new_cell)
 		_unit_visuals.jump_tween(tween)
 	else:
