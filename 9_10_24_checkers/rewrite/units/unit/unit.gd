@@ -36,22 +36,33 @@ func move(new_cell: Vector2i) -> void:
 			#func(a, b): return cell.distance_squared_to(a) > cell.distance_squared_to(b)
 	#)
 
-	if tween:
-		tween.kill()
-	tween = create_tween()
-
 	if can_jump:
-		# TODO: figure out how to find a path to the target cell
-		# and loop the tween to get there
+		for path: Array in jump_paths:
+			for data: JumpData in path:
+				if not data.target_cell == new_cell:
+					continue
 
-		#tween.set_loops(available_cells.size())
-		_move_tween(new_cell)
-		_unit_visuals.jump_tween(tween)
+				_jump_tween_through_path(path)
 	else:
+		if tween:
+			tween.kill()
+		tween = create_tween()
 		_move_tween(new_cell)
 
 	tween.tween_callback(_finish_moving.bind(new_cell))
 	#tween.finished.connect(_finish_moving.bind(new_cell))
+
+
+func _jump_tween_through_path(path: Array) -> void:
+	for data: JumpData in path:
+		if tween:
+			tween.kill()
+		tween = create_tween()
+
+		_move_tween(data.target_cell)
+		_unit_visuals.jump_tween(tween)
+		await tween.finished
+		data.jumped_unit.explode()
 
 
 func _move_tween(new_cell) -> void:
