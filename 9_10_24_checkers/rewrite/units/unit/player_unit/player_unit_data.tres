@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="UnitData" load_steps=2 format=3 uid="uid://cim86bc58xkb7"]
+
+[ext_resource type="Script" path="res://rewrite/units/unit/unit_data.gd" id="1_6ww05"]
+
+[resource]
+resource_local_to_scene = true
+script = ExtResource("1_6ww05")
+normal_color = Color(0.0980392, 0.0980392, 0.439216, 1)
+king_color = Color(0, 0, 0, 1)
+directions = Array[int]([0, 1])
+team = 0

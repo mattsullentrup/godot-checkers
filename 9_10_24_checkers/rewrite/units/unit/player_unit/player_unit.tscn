@@ -1,0 +1,7 @@
+[gd_scene load_steps=3 format=3 uid="uid://bh4bo7ytpa3fr"]
+
+[ext_resource type="PackedScene" uid="uid://do0uo4ytei58b" path="res://rewrite/units/unit/unit.tscn" id="1_tfwkq"]
+[ext_resource type="Resource" uid="uid://cim86bc58xkb7" path="res://rewrite/units/unit/player_unit/player_unit_data.tres" id="2_c4obe"]
+
+[node name="PlayerUnit" instance=ExtResource("1_tfwkq")]
+unit_data = ExtResource("2_c4obe")

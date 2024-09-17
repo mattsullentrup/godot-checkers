@@ -7,6 +7,8 @@ const MOVEMENT_DURATION = 0.5
 signal unit_defeated(unit: Unit)
 signal movement_completed(unit: Unit)
 
+@export var unit_data: UnitData
+
 var team: Globals.Team
 var cell: Vector2i
 var directions: Array[Globals.Direction]
@@ -14,10 +16,13 @@ var directions: Array[Globals.Direction]
 # INFO: This is only used for other nodes to display/check if unit can move to click
 var available_cells: Array[Vector2i]
 var jump_paths: Array[Array]
-var color: Color
+var color: Color:
+	get:
+		return unit_data.color
 var can_move: bool
 var can_jump: bool
-var is_king: bool
+var is_king: bool:
+	set = _set_is_king
 var normal_move_tween: Tween
 var jump_path_tween: Tween
 
@@ -69,6 +74,7 @@ func _jump_tween_through_path(path: Array, new_cell: Vector2i) -> void:
 
 	_finish_moving(new_cell)
 
+
 func _move_tween(new_cell, tween) -> void:
 	var world_pos = Navigation.cell_to_world(new_cell)
 	tween.tween_property(self, "global_position", Vector2(world_pos), MOVEMENT_DURATION) \
@@ -80,3 +86,10 @@ func _finish_moving(new_cell: Vector2i) -> void:
 	cell = new_cell
 	movement_completed.emit(self)
 	z_index -= 1
+
+
+func _set_is_king(_value) -> void:
+	for vector in Globals.movement_vectors:
+		var movement_direction = Globals.movement_vectors.get(vector)
+		if not directions.has(movement_direction):
+			directions.append(movement_direction)

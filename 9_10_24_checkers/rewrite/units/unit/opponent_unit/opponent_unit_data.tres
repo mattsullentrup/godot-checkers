@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="UnitData" load_steps=2 format=3 uid="uid://did2yr4skui84"]
+
+[ext_resource type="Script" path="res://rewrite/units/unit/unit_data.gd" id="1_y4mpe"]
+
+[resource]
+resource_local_to_scene = true
+script = ExtResource("1_y4mpe")
+normal_color = Color(0.780392, 0.0823529, 0.521569, 1)
+king_color = Color(0, 0, 0, 1)
+directions = Array[int]([2, 3])
+team = 1

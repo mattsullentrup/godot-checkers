@@ -8,7 +8,6 @@ signal defeated
 const UNIT = preload("res://rewrite/units/unit/unit.tscn")
 
 @export var team_color: Color = Color.MIDNIGHT_BLUE
-@export var _directions: Array[Globals.Direction]
 @export var _other_side_of_board_y: int
 
 var team: Globals.Team
@@ -27,9 +26,6 @@ func init() -> void:
 		if not unit:
 			continue
 
-		unit.team = team
-		unit.directions = _directions
-		unit.color = team_color
 		unit.unit_defeated.connect(_on_unit_defeated)
 		units.append(unit)
 

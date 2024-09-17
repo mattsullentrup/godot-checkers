@@ -21,12 +21,10 @@ script = ExtResource("3_tg5mk")
 
 [node name="PlayerGroup" parent="Units" instance=ExtResource("4_8u215")]
 unique_name_in_owner = true
-_directions = Array[int]([0, 1])
 
 [node name="OpponentGroup" parent="Units" instance=ExtResource("4_8u215")]
 unique_name_in_owner = true
 team_color = Color(0.780392, 0.0823529, 0.521569, 1)
-_directions = Array[int]([2, 3])
 _other_side_of_board_y = 7
 
 [node name="UI" type="CanvasLayer" parent="."]
