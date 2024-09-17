@@ -13,8 +13,21 @@ func _draw() -> void:
 
 
 func generate_level() -> void:
-	_create_units(0, 3, _opponent_group)
-	_create_units(5, Globals.GRID_SIZE, _player_group)
+	#_create_units(0, 3, _opponent_group)
+	#_create_units(5, Globals.GRID_SIZE, _player_group)
+
+	_test_unit_creation(_player_group, Vector2i(3, 6))
+
+	for y in [1, 3, 5]:
+		for x in [2, 4, 6]:
+			_test_unit_creation(_opponent_group, Vector2i(x, y))
+
+
+func _test_unit_creation(team: UnitGroup, pos) -> void:
+	var unit = UNIT.instantiate()
+	unit.cell = pos
+	unit.global_position = Navigation.cell_to_world(unit.cell)
+	team.add_child(unit)
 
 
 func _draw_tiles() -> void:
@@ -37,5 +50,5 @@ func _create_units(start_y: int, end_y: int, group: UnitGroup) -> void:
 		for x in range(start, Globals.GRID_SIZE, 2):
 			var unit = UNIT.instantiate()
 			unit.cell = Vector2i(x, y)
-			unit.global_position = Vector2i(x, y) * Globals.CELL_SIZE
+			unit.global_position = Navigation.cell_to_world(unit.cell)
 			group.add_child(unit)
