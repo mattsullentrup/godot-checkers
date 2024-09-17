@@ -73,18 +73,25 @@ func _check_for_multi_jumps(unit: Unit, starting_cell: Vector2i, jump_path: Arra
 		if not _can_jump_to_cell(unit, new_target_cell, jumped_cell):
 			continue
 
-		var jump_data := JumpData.new()
-		for unit_on_board: Unit in _parent.all_units:
-			if not unit_on_board.cell == jumped_cell:
-				continue
-
-			jump_data.jumped_unit = unit_on_board
-			break
-
 		unit.available_cells.append(new_target_cell)
-		jump_data.target_cell = new_target_cell
+
+		var jump_data := _create_jump_data(new_target_cell, jumped_cell)
 		jump_path.append(jump_data)
+
 		_check_for_multi_jumps(unit, new_target_cell, jump_path)
+
+
+func _create_jump_data(target_cell: Vector2i, jumped_cell: Vector2i) -> JumpData:
+	var jump_data := JumpData.new()
+	jump_data.target_cell = target_cell
+	for unit_on_board: Unit in _parent.all_units:
+		if not unit_on_board.cell == jumped_cell:
+			continue
+
+		jump_data.jumped_unit = unit_on_board
+		break
+
+	return jump_data
 
 
 func _can_jump_to_cell(unit: Unit, target_cell: Vector2i, jumped_cell: Vector2i) -> bool:
