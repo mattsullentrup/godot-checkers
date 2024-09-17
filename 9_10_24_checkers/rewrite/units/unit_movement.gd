@@ -9,17 +9,22 @@ func get_moveable_units() -> void:
 	for unit: Unit in _parent.units:
 		unit.available_cells.clear()
 		for direction in unit.directions:
+			# Find out if unit can move at all
 			var movement_direction: Vector2i = Globals.movement_vectors.get(direction)
 			var target_cell = unit.cell + movement_direction
 			if not _is_cell_available(unit, movement_direction, target_cell):
 				continue
 
+			# If cell is available, unit is moveable
 			_parent.moveable_units.append(unit)
 			unit.can_move = true
+
+			# Check if the unit can jump
 			if not unit.can_jump:
 				continue
 
 			_parent.jumpable_units.append(unit)
+			# Remove any normal moves from the units list of available moves
 			for cell in unit.available_cells:
 				var squared_distance = unit.cell.distance_squared_to(cell)
 				if not squared_distance == 2:
@@ -39,6 +44,7 @@ func _is_cell_available(unit: Unit, initial_direction: Vector2i, target_cell: Ve
 		if unit_on_board.team == unit.team:
 			return false
 		else:
+			# There is an adjacent enemy unit so find out if it can be jumped
 			var new_target_cell = target_cell + initial_direction
 			if not _can_jump_to_cell(unit, new_target_cell, unit_on_board.cell):
 				return false
@@ -59,13 +65,18 @@ func _check_for_multi_jumps(unit: Unit, starting_cell: Vector2i) -> void:
 		var movement_direction = Globals.movement_vectors.get(direction)
 		var jumped_cell = movement_direction + starting_cell
 		var new_target_cell = jumped_cell + movement_direction
-		if _can_jump_to_cell(unit, new_target_cell, jumped_cell):
-			for unit_on_board: Unit in _parent.all_units:
-				if unit_on_board.cell == jumped_cell:
-					unit.units_to_jump_over.append(unit_on_board)
-					break
-			unit.available_cells.append(new_target_cell)
-			_check_for_multi_jumps(unit, new_target_cell)
+		if not _can_jump_to_cell(unit, new_target_cell, jumped_cell):
+			continue
+
+		for unit_on_board: Unit in _parent.all_units:
+			if not unit_on_board.cell == jumped_cell:
+				continue
+
+			unit.units_to_jump_over.append(unit_on_board)
+			break
+
+		unit.available_cells.append(new_target_cell)
+		_check_for_multi_jumps(unit, new_target_cell)
 
 
 func _can_jump_to_cell(unit: Unit, target_cell: Vector2i, jumped_cell: Vector2i) -> bool:
