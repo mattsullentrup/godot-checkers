@@ -2,6 +2,8 @@ class_name Unit
 extends Node2D
 
 
+const MOVEMENT_DURATION = 0.75
+
 signal unit_defeated(unit: Unit)
 signal movement_completed
 
@@ -19,7 +21,6 @@ var tween: Tween
 
 
 func explode() -> void:
-	print("exploding")
 	unit_defeated.emit(self)
 	_unit_visuals.explode()
 	await $GPUParticles2D.finished
@@ -35,11 +36,15 @@ func move(new_cell: Vector2i) -> void:
 	if tween:
 		tween.kill()
 	tween = create_tween()
+	tween.set_parallel(true)
 
 	var world_pos = Navigation.cell_to_world(new_cell)
-	tween.tween_property(self, "global_position", Vector2(world_pos), .5) \
+	tween.tween_property(self, "global_position", Vector2(world_pos), MOVEMENT_DURATION) \
 			.set_trans(Tween.TRANS_QUAD) \
 			.set_ease(Tween.EASE_OUT)
+
+	if can_jump:
+		_unit_visuals.jump_tween(tween)
 
 	tween.tween_interval(0.1)
 	#tween.tween_callback(_finish_moving.bind(new_cell))
@@ -51,13 +56,3 @@ func _finish_moving(new_cell: Vector2i) -> void:
 	cell = new_cell
 	movement_completed.emit(self)
 	z_index -= 1
-
-
-func _jump_tween() -> void:
-	tween.set_parallel(true)
-	tween.tween_property(_unit_visuals, "radius", _unit_visuals.INITIAL_RADIUS + 30, 0.5) \
-			.set_trans(Tween.TRANS_SINE) \
-			.set_ease(Tween.EASE_OUT)
-	tween.tween_property(_unit_visuals, "radius", _unit_visuals.INITIAL_RADIUS, 0.5).set_delay(0.75) \
-			.set_trans(Tween.TRANS_SINE) \
-			.set_ease(Tween.EASE_IN_OUT)

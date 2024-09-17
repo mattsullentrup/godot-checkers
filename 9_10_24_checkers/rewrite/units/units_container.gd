@@ -26,9 +26,9 @@ func _unhandled_input(event: InputEvent) -> void:
 			return
 		for unit in _active_group.units:
 			if (
-						not unit.cell == _current_mouse_cell \
-						or unit not in _active_group.moveable_units \
-						or unit.can_move == false
+					not unit.cell == _current_mouse_cell \
+					or unit not in _active_group.moveable_units \
+					or unit.can_move == false
 			):
 				continue
 
