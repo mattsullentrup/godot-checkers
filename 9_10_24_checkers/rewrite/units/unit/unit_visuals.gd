@@ -60,10 +60,11 @@ func explode() -> void:
 
 func jump_tween(tween: Tween) -> void:
 	var grow_time = _parent.MOVEMENT_DURATION / GROW_DIVISOR
-	tween.tween_property(self, "_radius", BIG_RADIUS, grow_time) \
+	tween.parallel().tween_property(self, "_radius", BIG_RADIUS, grow_time) \
 			.set_trans(Tween.TRANS_SINE) \
 			.set_ease(Tween.EASE_OUT)
+
 	var shrink_time = _parent.MOVEMENT_DURATION / SHRINK_DIVISOR
-	tween.tween_property(self, "_radius", INITIAL_RADIUS, shrink_time).set_delay(grow_time)\
+	tween.parallel().tween_property(self, "_radius", INITIAL_RADIUS, shrink_time).set_delay(grow_time)\
 			.set_trans(Tween.TRANS_SINE) \
 			.set_ease(Tween.EASE_IN)

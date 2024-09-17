@@ -23,7 +23,9 @@ func _unhandled_input(event: InputEvent) -> void:
 			_active_group.selected_unit.move(_current_mouse_cell)
 			for unit: Unit in _active_group.moveable_units:
 				unit.can_move = false
+
 			return
+
 		for unit in _active_group.units:
 			if (
 					not unit.cell == _current_mouse_cell \
