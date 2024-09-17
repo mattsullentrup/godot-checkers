@@ -6,6 +6,7 @@ extends Node2D
 
 
 func get_moveable_units() -> void:
+	await get_tree().create_timer(.1).timeout
 	for unit: Unit in _parent.units:
 		unit.available_cells.clear()
 		for direction in unit.directions:
@@ -78,6 +79,7 @@ func _check_for_multi_jumps(unit: Unit, starting_cell: Vector2i, jump_path: Arra
 		var jump_data := _create_jump_data(new_target_cell, jumped_cell)
 		jump_path.append(jump_data)
 
+		#var new_path := jump_path.duplicate()
 		_check_for_multi_jumps(unit, new_target_cell, jump_path)
 
 
@@ -88,7 +90,7 @@ func _create_jump_data(target_cell: Vector2i, jumped_cell: Vector2i) -> JumpData
 		if not unit_on_board.cell == jumped_cell:
 			continue
 
-		jump_data.jumped_unit = unit_on_board
+		jump_data.jumpable_unit = unit_on_board
 		break
 
 	return jump_data

@@ -45,13 +45,17 @@ func move(new_cell: Vector2i) -> void:
 	if can_jump:
 		_find_jump_path(new_cell)
 	else:
-		if normal_move_tween:
-			normal_move_tween.kill()
+		_tween_move_normally(new_cell)
 
-		normal_move_tween = create_tween()
-		_move_tween(new_cell, normal_move_tween)
 
-		normal_move_tween.tween_callback(_finish_moving.bind(new_cell))
+func _tween_move_normally(new_cell: Vector2i) -> void:
+	if normal_move_tween:
+		normal_move_tween.kill()
+
+	normal_move_tween = create_tween()
+	_move_tween(new_cell, normal_move_tween)
+
+	normal_move_tween.tween_callback(_finish_moving.bind(new_cell))
 
 
 func _find_jump_path(new_cell: Vector2i) -> void:
@@ -73,7 +77,7 @@ func _jump_tween_through_path(path: Array, new_cell: Vector2i) -> void:
 		_unit_visuals.jump_tween(jump_path_tween)
 
 		await jump_path_tween.finished
-		data.jumped_unit.explode()
+		data.jumpable_unit.explode()
 
 	_finish_moving(new_cell)
 

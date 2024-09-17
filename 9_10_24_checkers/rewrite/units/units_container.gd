@@ -15,14 +15,13 @@ var _current_mouse_cell: Vector2i
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("left_click"):
 		_current_mouse_cell = Navigation.world_to_cell(get_global_mouse_position())
-		if _unit_can_move_to_click():
-			_active_group.selected_unit.move(_current_mouse_cell)
-			for unit: Unit in _active_group.moveable_units:
-				unit.can_move = false
-
+		if not _unit_can_move_to_click():
+			_try_to_select_unit()
 			return
 
-		_try_to_select_unit()
+		_active_group.selected_unit.move(_current_mouse_cell)
+		for unit: Unit in _active_group.moveable_units:
+			unit.can_move = false
 	elif event.is_action_pressed("right_click"):
 		_active_group.set_selected_unit(null)
 
@@ -67,7 +66,7 @@ func _unit_can_move_to_click() -> bool:
 
 
 func _on_turn_completed(group: UnitGroup) -> void:
-	if group.units.size() > 1:
+	if group.units.size() > 0:
 		_step_turn()
 	else:
 		battle_over.emit(_player_group.units.size() > 0)
