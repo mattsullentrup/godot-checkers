@@ -22,7 +22,7 @@ var jump_path_tween: Tween
 var cell: Vector2i
 var color: Color
 
-var is_king: bool:
+@export var is_king: bool:
 	set = _set_is_king
 
 @onready var _unit_visuals: UnitVisuals = %UnitVisuals
@@ -78,6 +78,9 @@ func _jump_tween_through_path(path: Array, new_cell: Vector2i) -> void:
 
 		await jump_path_tween.finished
 		data.jumpable_unit.explode()
+
+		#if Navigation.world_to_cell(global_position) == new_cell:
+			#break
 
 	_finish_moving(new_cell)
 
