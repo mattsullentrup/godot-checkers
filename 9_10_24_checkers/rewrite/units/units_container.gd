@@ -15,28 +15,14 @@ var _current_mouse_cell: Vector2i
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("left_click"):
 		_current_mouse_cell = Navigation.world_to_cell(get_global_mouse_position())
-		if (
-				_active_group.selected_unit \
-				and _current_mouse_cell in _active_group.selected_unit.available_cells
-				and _active_group.selected_unit.can_move == true
-		):
+		if _unit_can_move_to_click():
 			_active_group.selected_unit.move(_current_mouse_cell)
 			for unit: Unit in _active_group.moveable_units:
 				unit.can_move = false
 
 			return
 
-		for unit in _active_group.units:
-			if (
-					not unit.cell == _current_mouse_cell \
-					or unit not in _active_group.moveable_units \
-					or unit.can_move == false
-			):
-				continue
-
-			get_viewport().set_input_as_handled()
-			_active_group.set_selected_unit(unit)
-			return
+		_try_to_select_unit()
 	elif event.is_action_pressed("right_click"):
 		_active_group.set_selected_unit(null)
 
@@ -57,6 +43,27 @@ func start_battle() -> void:
 	_get_all_units()
 	_active_group = _player_group
 	_player_group.take_turn()
+
+
+func _try_to_select_unit() -> void:
+	for unit in _active_group.units:
+		if (
+				not unit.cell == _current_mouse_cell \
+				or unit not in _active_group.moveable_units \
+				or unit.can_move == false
+		):
+			continue
+
+		get_viewport().set_input_as_handled()
+		_active_group.set_selected_unit(unit)
+
+
+func _unit_can_move_to_click() -> bool:
+	return (
+			_active_group.selected_unit \
+			and _current_mouse_cell in _active_group.selected_unit.normal_moves
+			and _active_group.selected_unit.can_move == true
+	)
 
 
 func _on_turn_completed(group: UnitGroup) -> void:
