@@ -5,12 +5,10 @@ extends Node2D
 signal turn_completed(group: UnitGroup)
 signal defeated
 
-const UNIT = preload("res://rewrite/units/unit/unit.tscn")
-
+@export var team: Globals.Team
 @export var team_color: Color = Color.MIDNIGHT_BLUE
 @export var _other_side_of_board_y: int
 
-var team: Globals.Team
 var units: Array[Unit]
 var moveable_units: Array[Unit]
 var jumpable_units: Array[Unit]

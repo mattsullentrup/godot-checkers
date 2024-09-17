@@ -2,7 +2,8 @@ class_name LevelGenerator
 extends Node2D
 
 
-const UNIT = preload("res://rewrite/units/unit/unit.tscn")
+const OPPONENT_UNIT = preload("res://rewrite/units/unit/opponent_unit/opponent_unit.tscn")
+const PLAYER_UNIT = preload("res://rewrite/units/unit/player_unit/player_unit.tscn")
 
 @onready var _player_group: UnitGroup = %PlayerGroup
 @onready var _opponent_group: UnitGroup = %OpponentGroup
@@ -23,11 +24,11 @@ func generate_level() -> void:
 			_make_new_unit(_opponent_group, Vector2i(x, y))
 
 
-func _make_new_unit(team: UnitGroup, pos) -> void:
-	var unit = UNIT.instantiate()
+func _make_new_unit(group: UnitGroup, pos) -> void:
+	var unit = PLAYER_UNIT.instantiate() if group.team == Globals.Team.PLAYER else OPPONENT_UNIT.instantiate()
 	unit.cell = pos
 	unit.global_position = Navigation.cell_to_world(unit.cell)
-	team.add_child(unit)
+	group.add_child(unit)
 
 
 func _draw_tiles() -> void:

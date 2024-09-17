@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://bh4bo7ytpa3fr"]
+[gd_scene load_steps=2 format=3 uid="uid://bh4bo7ytpa3fr"]
 
 [ext_resource type="PackedScene" uid="uid://do0uo4ytei58b" path="res://rewrite/units/unit/unit.tscn" id="1_tfwkq"]
-[ext_resource type="Resource" uid="uid://cim86bc58xkb7" path="res://rewrite/units/unit/player_unit/player_unit_data.tres" id="2_c4obe"]
 
 [node name="PlayerUnit" instance=ExtResource("1_tfwkq")]
-unit_data = ExtResource("2_c4obe")
+directions = Array[int]([0, 1])
+normal_color = Color(0.0980392, 0.0980392, 0.439216, 1)
+king_color = Color(0.550872, 0.241093, 0.832644, 1)
