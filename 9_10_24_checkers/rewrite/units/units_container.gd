@@ -61,7 +61,7 @@ func _try_to_select_unit() -> void:
 func _unit_can_move_to_click() -> bool:
 	return (
 			_active_group.selected_unit \
-			and _current_mouse_cell in _active_group.selected_unit.normal_moves
+			and _current_mouse_cell in _active_group.selected_unit.available_cells
 			and _active_group.selected_unit.can_move == true
 	)
 

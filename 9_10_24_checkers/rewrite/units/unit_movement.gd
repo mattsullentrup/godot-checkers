@@ -7,7 +7,7 @@ extends Node2D
 
 func get_moveable_units() -> void:
 	for unit: Unit in _parent.units:
-		unit.normal_moves.clear()
+		unit.available_cells.clear()
 		for direction in unit.directions:
 			# Find out if unit can move at all
 			var movement_direction: Vector2i = Globals.movement_vectors.get(direction)
@@ -25,12 +25,12 @@ func get_moveable_units() -> void:
 
 			_parent.jumpable_units.append(unit)
 			# Remove any normal moves from the units list of available moves
-			for cell in unit.normal_moves:
+			for cell in unit.available_cells:
 				var squared_distance = unit.cell.distance_squared_to(cell)
 				if not squared_distance == 2:
 					continue
 
-				unit.normal_moves.erase(cell)
+				unit.available_cells.erase(cell)
 
 
 func _is_cell_available(unit: Unit, initial_direction: Vector2i, target_cell: Vector2i) -> bool:
@@ -50,8 +50,7 @@ func _is_cell_available(unit: Unit, initial_direction: Vector2i, target_cell: Ve
 				return false
 
 			unit.can_jump = true
-			#unit.normal_moves.append(new_target_cell)
-			#unit.units_to_jump_over.append(unit_on_board)
+			unit.available_cells.append(new_target_cell)
 			var jump_path: Array
 			var jump_data = {
 				"jumped_unit": unit_on_board,
@@ -63,8 +62,8 @@ func _is_cell_available(unit: Unit, initial_direction: Vector2i, target_cell: Ve
 			return true
 
 	# Can make a normal move
-	unit.normal_moves.append(target_cell)
-	return unit.normal_moves.size() > 0
+	unit.available_cells.append(target_cell)
+	return unit.available_cells.size() > 0
 
 
 func _check_for_multi_jumps(unit: Unit, starting_cell: Vector2i, jump_path: Array) -> void:
@@ -80,11 +79,10 @@ func _check_for_multi_jumps(unit: Unit, starting_cell: Vector2i, jump_path: Arra
 			if not unit_on_board.cell == jumped_cell:
 				continue
 
-			#unit.units_to_jump_over.append(unit_on_board)
 			jump_data["jumped_unit"] = unit_on_board
 			break
 
-		#unit.normal_moves.append(new_target_cell)
+		unit.available_cells.append(new_target_cell)
 		jump_data["target_cell"] = new_target_cell
 		_check_for_multi_jumps(unit, new_target_cell, jump_path)
 

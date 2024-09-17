@@ -74,8 +74,7 @@ func _end_turn() -> void:
 	for unit: Unit in moveable_units:
 		unit.can_move = false
 		unit.can_jump = false
-		#unit.units_to_jump_over.clear()
-		unit.jump_paths.clear
+		unit.jump_paths.clear()
 
 	moveable_units.clear()
 	jumpable_units.clear()
@@ -89,7 +88,5 @@ func _on_unit_defeated(unit: Unit) -> void:
 		defeated.emit()
 
 
-func _on_unit_movement_completed(unit: Unit) -> void:
-	#for enemy_unit: Unit in unit.units_to_jump_over:
-		#enemy_unit.explode()
+func _on_unit_movement_completed() -> void:
 	_end_turn()
