@@ -54,41 +54,43 @@ func _is_cell_available(unit: Unit, initial_direction: Vector2i, target_cell: Ve
 
 func _can_jump_over_enemy(
 			target_cell: Vector2i, initial_direction: Vector2i, \
-			unit: Unit, unit_on_board: Unit) -> bool:
+			unit: Unit, enemy: Unit) -> bool:
 	var new_target_cell = target_cell + initial_direction
-	if not _can_jump_to_cell(unit, new_target_cell, unit_on_board.cell):
+	if not _can_jump_to_cell(unit, new_target_cell, enemy.cell):
 		return false
 
 	unit.can_jump = true
 	unit.available_cells.append(new_target_cell)
 
-	var first_jump := JumpData.new(unit_on_board, new_target_cell)
+	var first_jump := JumpData.new(enemy, new_target_cell)
 	var jump_path: Array
 	jump_path.append(first_jump)
 
 	var backwards: Vector2i = target_cell - new_target_cell
-	_check_for_multi_jumps(unit, new_target_cell, jump_path, backwards)
-	unit.jump_paths.append(jump_path)
+	for data in _get_valid_jump_data(unit, new_target_cell, jump_path, backwards):
+			var path := jump_path.duplicate()
+			path.append(data)
+			unit.jump_paths.append(path)
+
 	return true
 
 
-func _check_for_multi_jumps(unit: Unit, starting_cell: Vector2i, jump_path: Array, backwards) -> void:
+func _get_valid_jump_data(unit: Unit, starting_cell: Vector2i, jump_path: Array, backwards: Vector2i) -> Array[JumpData]:
+	var valid_data: Array[JumpData]
 	for direction in unit.directions:
 		var movement_direction = Globals.movement_vectors.get(direction)
 		var jumped_cell = movement_direction + starting_cell
 		var new_target_cell = jumped_cell + movement_direction
-		if not _can_jump_to_cell(unit, new_target_cell, jumped_cell):
-			continue
-		if movement_direction == backwards:
+		if not _can_jump_to_cell(unit, new_target_cell, jumped_cell) or movement_direction == backwards:
 			continue
 
 		unit.available_cells.append(new_target_cell)
 
 		var jump_data := _create_jump_data(new_target_cell, jumped_cell)
-		jump_path.append(jump_data)
+		valid_data.append(jump_data)
 
-		backwards = jumped_cell - new_target_cell
-		_check_for_multi_jumps(unit, new_target_cell, jump_path, backwards)
+	return valid_data
+
 
 
 func _create_jump_data(target_cell: Vector2i, jumped_cell: Vector2i) -> JumpData:
@@ -108,9 +110,11 @@ func _can_jump_to_cell(unit: Unit, target_cell: Vector2i, jumped_cell: Vector2i)
 	if not _validate_tile(target_cell):
 		return false
 
+	# Cell is occupied
 	if _parent.all_units.any(func(x: Unit): return x.cell == target_cell):
 		return false
 
+	# Will jump over an enemy, not a teammate
 	return _parent.all_units.any(
 			func(x: Unit): return x.cell == jumped_cell and not x.team == unit.team
 	)
