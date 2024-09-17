@@ -45,26 +45,31 @@ func _is_cell_available(unit: Unit, initial_direction: Vector2i, target_cell: Ve
 		if unit_on_board.team == unit.team:
 			return false
 		else:
-			# There is an adjacent enemy unit so find out if it can be jumped
-			var new_target_cell = target_cell + initial_direction
-			if not _can_jump_to_cell(unit, new_target_cell, unit_on_board.cell):
-				return false
-
-			unit.can_jump = true
-			unit.available_cells.append(new_target_cell)
-
-			var jump_data := JumpData.new(unit_on_board, new_target_cell)
-			var jump_path: Array
-			jump_path.append(jump_data)
-
-			var backwards: Vector2i = target_cell - new_target_cell
-			_check_for_multi_jumps(unit, new_target_cell, jump_path, backwards)
-			unit.jump_paths.append(jump_path)
-			return true
+			return _can_jump_over_enemy(target_cell, initial_direction, unit, unit_on_board)
 
 	# Can make a normal move
 	unit.available_cells.append(target_cell)
 	return unit.available_cells.size() > 0
+
+
+func _can_jump_over_enemy(
+			target_cell: Vector2i, initial_direction: Vector2i, \
+			unit: Unit, unit_on_board: Unit) -> bool:
+	var new_target_cell = target_cell + initial_direction
+	if not _can_jump_to_cell(unit, new_target_cell, unit_on_board.cell):
+		return false
+
+	unit.can_jump = true
+	unit.available_cells.append(new_target_cell)
+
+	var first_jump := JumpData.new(unit_on_board, new_target_cell)
+	var jump_path: Array
+	jump_path.append(first_jump)
+
+	var backwards: Vector2i = target_cell - new_target_cell
+	_check_for_multi_jumps(unit, new_target_cell, jump_path, backwards)
+	unit.jump_paths.append(jump_path)
+	return true
 
 
 func _check_for_multi_jumps(unit: Unit, starting_cell: Vector2i, jump_path: Array, backwards) -> void:
