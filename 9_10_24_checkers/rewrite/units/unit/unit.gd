@@ -64,5 +64,5 @@ func _move_tween(new_cell) -> void:
 
 func _finish_moving(new_cell: Vector2i) -> void:
 	cell = new_cell
-	movement_completed.emit(self)
+	movement_completed.emit()
 	z_index -= 1

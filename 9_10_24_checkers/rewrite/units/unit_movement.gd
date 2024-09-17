@@ -51,12 +51,11 @@ func _is_cell_available(unit: Unit, initial_direction: Vector2i, target_cell: Ve
 
 			unit.can_jump = true
 			unit.available_cells.append(new_target_cell)
+
+			var jump_data := JumpData.new(unit_on_board, new_target_cell)
 			var jump_path: Array
-			var jump_data = {
-				"jumped_unit": unit_on_board,
-				"target_cell": target_cell,
-			}
 			jump_path.append(jump_data)
+
 			_check_for_multi_jumps(unit, new_target_cell, jump_path)
 			unit.jump_paths.append(jump_path)
 			return true
@@ -74,16 +73,17 @@ func _check_for_multi_jumps(unit: Unit, starting_cell: Vector2i, jump_path: Arra
 		if not _can_jump_to_cell(unit, new_target_cell, jumped_cell):
 			continue
 
-		var jump_data = {}
+		var jump_data := JumpData.new()
 		for unit_on_board: Unit in _parent.all_units:
 			if not unit_on_board.cell == jumped_cell:
 				continue
 
-			jump_data["jumped_unit"] = unit_on_board
+			jump_data.jumped_unit = unit_on_board
 			break
 
 		unit.available_cells.append(new_target_cell)
-		jump_data["target_cell"] = new_target_cell
+		jump_data.target_cell = new_target_cell
+		jump_path.append(jump_data)
 		_check_for_multi_jumps(unit, new_target_cell, jump_path)
 
 
