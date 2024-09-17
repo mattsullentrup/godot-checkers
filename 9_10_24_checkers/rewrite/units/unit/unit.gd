@@ -5,7 +5,7 @@ extends Node2D
 const MOVEMENT_DURATION = 0.5
 
 signal unit_defeated(unit: Unit)
-signal movement_completed
+signal movement_completed(unit: Unit)
 
 var team: Globals.Team
 var cell: Vector2i
@@ -17,6 +17,7 @@ var jump_paths: Array[Array]
 var color: Color
 var can_move: bool
 var can_jump: bool
+var is_king: bool
 var normal_move_tween: Tween
 var jump_path_tween: Tween
 
@@ -43,7 +44,7 @@ func move(new_cell: Vector2i) -> void:
 		_move_tween(new_cell, normal_move_tween)
 
 		normal_move_tween.tween_callback(_finish_moving.bind(new_cell))
-	#tween.finished.connect(_finish_moving.bind(new_cell))
+
 
 func _find_jump_path(new_cell: Vector2i) -> void:
 	for path: Array in jump_paths:
@@ -66,7 +67,6 @@ func _jump_tween_through_path(path: Array, new_cell: Vector2i) -> void:
 		await jump_path_tween.finished
 		data.jumped_unit.explode()
 
-	#jump_path_tween.tween_callback(_finish_moving.bind(new_cell))
 	_finish_moving(new_cell)
 
 func _move_tween(new_cell, tween) -> void:
@@ -74,10 +74,9 @@ func _move_tween(new_cell, tween) -> void:
 	tween.tween_property(self, "global_position", Vector2(world_pos), MOVEMENT_DURATION) \
 			.set_trans(Tween.TRANS_QUAD) \
 			.set_ease(Tween.EASE_OUT)
-			#.as_relative()
 
 
 func _finish_moving(new_cell: Vector2i) -> void:
 	cell = new_cell
-	movement_completed.emit()
+	movement_completed.emit(self)
 	z_index -= 1

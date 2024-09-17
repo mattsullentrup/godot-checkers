@@ -27,6 +27,7 @@ _directions = Array[int]([0, 1])
 unique_name_in_owner = true
 team_color = Color(0.780392, 0.0823529, 0.521569, 1)
 _directions = Array[int]([2, 3])
+_other_side_of_board_y = 7
 
 [node name="UI" type="CanvasLayer" parent="."]
 script = ExtResource("6_rd7dn")

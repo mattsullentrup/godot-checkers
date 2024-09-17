@@ -9,6 +9,7 @@ const UNIT = preload("res://rewrite/units/unit/unit.tscn")
 
 @export var team_color: Color = Color.MIDNIGHT_BLUE
 @export var _directions: Array[Globals.Direction]
+@export var _other_side_of_board_y: int
 
 var team: Globals.Team
 var units: Array[Unit]
@@ -89,5 +90,7 @@ func _on_unit_defeated(unit: Unit) -> void:
 		defeated.emit()
 
 
-func _on_unit_movement_completed() -> void:
+func _on_unit_movement_completed(unit: Unit) -> void:
+	if unit.cell.y == _other_side_of_board_y:
+		unit.is_king = true
 	_end_turn()
