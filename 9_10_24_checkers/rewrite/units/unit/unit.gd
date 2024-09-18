@@ -90,21 +90,33 @@ func _jump_tween_through_path(path: Array, new_cell: Vector2i) -> void:
 	_finish_moving(new_cell)
 
 
-# Check if any data in any path contains where this unit is at.
-# This is so we don't have to recreate all paths just because the unit stopped in the middle
 func _update_jump_paths(current_cell):
 	# Delete any path that doesn't follow the current one
 	# We only want to save ones that branch off after being the same so far
 	jump_paths = jump_paths.filter(
-			func(path): return path.any(
-					func(x: JumpData): return x.target_cell == current_cell
-			)
-	)
+			func(path: Array): return path.any(
+					func(x: JumpData): return x.target_cell == current_cell))
 
-	for jump_path in jump_paths:
+	# Remove any data in any path whose target cell is where this unit is at currently
+	# This is so we don't have to recreate all paths just because the unit stopped in the middle
+	for jump_path: Array in jump_paths:
+		#var new_path = jump_path.filter(func(x: JumpData): return not x.target_cell == current_cell)
+		var new_path: Array
 		for jump_data: JumpData in jump_path:
-			if jump_data.target_cell == current_cell:
-				jump_path.erase(jump_data)
+			if not jump_data.target_cell == current_cell:
+				new_path.append(jump_data)
+
+		jump_path = new_path
+
+	#jump_paths = jump_paths.filter(
+			#func(path: Array): return path.filter(
+					#func(x: JumpData): return not x.target_cell == current_cell))
+
+	pass
+	#for jump_path in jump_paths:
+		#for jump_data: JumpData in jump_path:
+			#if jump_data.target_cell == current_cell:
+				#jump_path.erase(jump_data)
 
 
 func _move_tween(new_cell, tween) -> void:
