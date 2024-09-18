@@ -10,15 +10,29 @@ func get_moveable_units() -> void:
 	for unit: Unit in _parent.units:
 		unit.available_cells.clear()
 		for direction in unit.directions:
-			_check_if_unit_can_move_at_all(unit, direction)
+			_check_if_unit_can_move_normally(unit, direction)
 
-		if unit.available_cells.size() <= 0:
-			continue
+			_check_if_unit_can_jump(unit)
 
-		_check_if_unit_can_jump(unit)
+		#if unit.available_cells.size() <= 0:
+			#continue
 
 
-func _check_if_unit_can_move_at_all(unit, direction) -> void:
+
+func check_unit_remaining_jumps(unit: Unit) -> void:
+	for direction in unit.directions:
+		var movement_direction: Vector2i = Globals.movement_vectors.get(direction)
+		var target_cell = unit.cell + movement_direction
+		for unit_to_check: Unit in _parent.all_units:
+			if not target_cell == unit_to_check.cell:
+				continue
+
+			if unit_to_check.team == unit.team:
+				break
+
+
+
+func _check_if_unit_can_move_normally(unit: Unit, direction: Globals.Direction) -> void:
 	var movement_direction: Vector2i = Globals.movement_vectors.get(direction)
 	var target_cell = unit.cell + movement_direction
 	if not _is_cell_available(unit, movement_direction, target_cell):
@@ -28,7 +42,7 @@ func _check_if_unit_can_move_at_all(unit, direction) -> void:
 	unit.can_move = true
 
 
-func _check_if_unit_can_jump(unit) -> void:
+func _check_if_unit_can_jump(unit: Unit) -> void:
 	if not unit.can_jump:
 		return
 
