@@ -81,17 +81,30 @@ func _jump_tween_through_path(path: Array, new_cell: Vector2i) -> void:
 
 		var current_cell = Navigation.world_to_cell(global_position)
 
-		# Check if any data in any path contains where this unit is at.
-		# This is so we don't have to recreate all paths just because the unit stopped in the middle
-		for jump_path in jump_paths:
-			for jump_data: JumpData in jump_path:
-				if jump_data.target_cell == current_cell:
-					jump_path.erase(jump_data)
+		_update_jump_paths(current_cell)
 
+		# Arrived at clicked cell, even if not end of path
 		if current_cell == new_cell:
 			break
 
 	_finish_moving(new_cell)
+
+
+# Check if any data in any path contains where this unit is at.
+# This is so we don't have to recreate all paths just because the unit stopped in the middle
+func _update_jump_paths(current_cell):
+	# Delete any path that doesn't follow the current one
+	# We only want to save ones that branch off after being the same so far
+	jump_paths = jump_paths.filter(
+			func(path): return path.any(
+					func(x: JumpData): return x.target_cell == current_cell
+			)
+	)
+
+	for jump_path in jump_paths:
+		for jump_data: JumpData in jump_path:
+			if jump_data.target_cell == current_cell:
+				jump_path.erase(jump_data)
 
 
 func _move_tween(new_cell, tween) -> void:
