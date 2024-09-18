@@ -10,13 +10,8 @@ func get_moveable_units() -> void:
 	for unit: Unit in _parent.units:
 		unit.available_cells.clear()
 		for direction in unit.directions:
-			_check_if_unit_can_move_normally(unit, direction)
-
-			_check_if_unit_can_jump(unit)
-
-		#if unit.available_cells.size() <= 0:
-			#continue
-
+			_get_unit_normal_moves(unit, direction)
+			_get_unit_jump_moves(unit)
 
 
 func check_unit_remaining_jumps(unit: Unit) -> void:
@@ -32,20 +27,17 @@ func check_unit_remaining_jumps(unit: Unit) -> void:
 
 
 
-func _check_if_unit_can_move_normally(unit: Unit, direction: Globals.Direction) -> void:
-	var movement_direction: Vector2i = Globals.movement_vectors.get(direction)
-	var target_cell = unit.cell + movement_direction
-	if not _is_cell_available(unit, movement_direction, target_cell):
+func _get_unit_normal_moves(unit: Unit, direction: Globals.Direction) -> void:
+	var target_cell = unit.cell + Globals.movement_vectors.get(direction)
+	if not _get_adjacent_unit(unit, target_cell) == null:
 		return
 
 	_parent.moveable_units.append(unit)
 	unit.can_move = true
+	unit.available_cells.append(target_cell)
 
 
-func _check_if_unit_can_jump(unit: Unit) -> void:
-	if not unit.can_jump:
-		return
-
+func _get_unit_jump_moves(unit: Unit) -> void:
 	_parent.jumpable_units.append(unit)
 	# Remove any normal moves from the units list of available moves
 	for cell in unit.available_cells:
@@ -56,23 +48,17 @@ func _check_if_unit_can_jump(unit: Unit) -> void:
 		unit.available_cells.erase(cell)
 
 
-func _is_cell_available(unit: Unit, initial_direction: Vector2i, target_cell: Vector2i) -> bool:
+func _get_adjacent_unit(unit: Unit, target_cell: Vector2i) -> Unit:
 	if not _is_tile_valid(target_cell):
-		return false
+		return null
 
-	for unit_on_board: Unit in _parent.all_units:
-		if not unit_on_board.cell == target_cell:
+	for unit_to_check: Unit in _parent.all_units:
+		if not unit_to_check.cell == target_cell:
 			continue
 
-		if unit_on_board.team == unit.team:
-			return false
+		return unit_to_check
 
-		if _can_jump_over_enemy(target_cell, initial_direction, unit, unit_on_board):
-			return true
-
-	# Can make a normal move
-	unit.available_cells.append(target_cell)
-	return true
+	return null
 
 
 func _can_jump_over_enemy(
