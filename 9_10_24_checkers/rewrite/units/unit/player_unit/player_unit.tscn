@@ -6,4 +6,3 @@
 directions = Array[int]([0, 1])
 normal_color = Color(0.0980392, 0.0980392, 0.439216, 1)
 king_color = Color(0.550872, 0.241093, 0.832644, 1)
-is_king = true

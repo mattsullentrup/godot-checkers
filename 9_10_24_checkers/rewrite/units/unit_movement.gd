@@ -45,7 +45,8 @@ func _is_cell_available(unit: Unit, initial_direction: Vector2i, target_cell: Ve
 		if unit_on_board.team == unit.team:
 			return false
 		else:
-			return _can_jump_over_enemy(target_cell, initial_direction, unit, unit_on_board)
+			if _can_jump_over_enemy(target_cell, initial_direction, unit, unit_on_board):
+				return true
 
 	# Can make a normal move
 	unit.available_cells.append(target_cell)
@@ -68,9 +69,9 @@ func _can_jump_over_enemy(
 
 	var backwards: Vector2i = target_cell - new_target_cell
 	for data in _get_valid_jump_data(unit, new_target_cell, jump_path, backwards):
-			var path := jump_path.duplicate()
-			path.append(data)
-			unit.jump_paths.append(path)
+		var path := jump_path.duplicate()
+		path.append(data)
+		unit.jump_paths.append(path)
 
 	return true
 
@@ -90,7 +91,6 @@ func _get_valid_jump_data(unit: Unit, starting_cell: Vector2i, jump_path: Array,
 		valid_data.append(jump_data)
 
 	return valid_data
-
 
 
 func _create_jump_data(target_cell: Vector2i, jumped_cell: Vector2i) -> JumpData:
