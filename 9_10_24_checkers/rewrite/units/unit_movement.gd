@@ -6,7 +6,7 @@ extends Node2D
 
 
 func get_moveable_units() -> void:
-	await get_tree().create_timer(.1).timeout
+	#await get_tree().create_timer(.1).timeout
 	for unit: Unit in _parent.units:
 		unit.available_cells.clear()
 		for direction in unit.directions:
@@ -20,15 +20,7 @@ func get_moveable_units() -> void:
 
 
 func check_unit_remaining_jumps(unit: Unit) -> void:
-	for direction in unit.directions:
-		var movement_direction: Vector2i = Globals.movement_vectors.get(direction)
-		var target_cell = unit.cell + movement_direction
-		for unit_to_check: Unit in _parent.all_units:
-			if not target_cell == unit_to_check.cell:
-				continue
-
-			if unit_to_check.team == unit.team:
-				break
+	pass
 
 
 func _get_unit_normal_moves(unit: Unit, direction: Globals.Direction) -> void:
@@ -54,8 +46,10 @@ func _get_unit_jump_moves(unit: Unit, direction: Globals.Direction) -> void:
 	if not _can_jump_over_enemy(jump_target_cell, direction, unit, adjacent_unit):
 		return
 
-	_parent.jumpable_units.append(unit)
-	#_discard_normal_moves(unit)
+	if not _parent.jumpable_units.has(unit):
+		_parent.jumpable_units.append(unit)
+	unit.can_jump = true
+	unit.can_move = true
 
 
 func _discard_normal_moves(unit: Unit) -> void:
