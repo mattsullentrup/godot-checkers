@@ -55,12 +55,14 @@ func take_turn() -> void:
 
 	_unit_movement.get_moveable_units()
 
-	if not jumpable_units.is_empty():
-		for unit in moveable_units:
-			if not unit.can_jump:
-				unit.can_move = false
-		moveable_units.clear()
-		moveable_units = jumpable_units.duplicate()
+	if jumpable_units.is_empty():
+		return
+
+	for unit in moveable_units:
+		if not unit.can_jump:
+			unit.can_move = false
+	moveable_units.clear()
+	moveable_units = jumpable_units.duplicate()
 
 
 func _end_turn() -> void:

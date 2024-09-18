@@ -80,7 +80,6 @@ func _can_jump_over_enemy(
 	if not _can_jump_to_cell(unit, jump_target_cell, enemy.cell):
 		return false
 
-	unit.can_jump = true
 	unit.available_cells.append(jump_target_cell)
 
 	var first_jump := JumpData.new(enemy, jump_target_cell)
