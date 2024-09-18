@@ -13,6 +13,11 @@ func get_moveable_units() -> void:
 			_get_unit_normal_moves(unit, direction)
 			_get_unit_jump_moves(unit, direction)
 
+		#if _parent.jumpable_units.has(unit):
+		#if not unit.jump_paths == null:
+		if unit.can_jump:
+			_discard_normal_moves(unit)
+
 
 func check_unit_remaining_jumps(unit: Unit) -> void:
 	for direction in unit.directions:
@@ -38,18 +43,19 @@ func _get_unit_normal_moves(unit: Unit, direction: Globals.Direction) -> void:
 
 
 func _get_unit_jump_moves(unit: Unit, direction: Globals.Direction) -> void:
-	var adjacent_cell = unit.cell + Globals.movement_vectors.get(direction)
+	var movement_direction = Globals.movement_vectors.get(direction)
+	var adjacent_cell = unit.cell + movement_direction
 	var adjacent_unit = _get_adjacent_unit(adjacent_cell)
 	if adjacent_unit == null or adjacent_unit.team == unit.team:
 		return
 
 	# There is an adjacent enemy, try to jump over it
-	var jump_target_cell: Vector2i = adjacent_cell + direction
+	var jump_target_cell: Vector2i = adjacent_cell + movement_direction
 	if not _can_jump_over_enemy(jump_target_cell, direction, unit, adjacent_unit):
 		return
 
 	_parent.jumpable_units.append(unit)
-	_discard_normal_moves(unit)
+	#_discard_normal_moves(unit)
 
 
 func _discard_normal_moves(unit: Unit) -> void:
