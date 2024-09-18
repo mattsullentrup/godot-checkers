@@ -16,22 +16,27 @@ func get_moveable_units() -> void:
 			if not _is_cell_available(unit, movement_direction, target_cell):
 				continue
 
-			# If cell is available, unit is moveable
-			_parent.moveable_units.append(unit)
-			unit.can_move = true
+		if unit.available_cells.size() <= 0:
+			continue
 
-			# Check if the unit can jump
-			if not unit.can_jump:
-				continue
+		_parent.moveable_units.append(unit)
+		unit.can_move = true
 
-			_parent.jumpable_units.append(unit)
-			# Remove any normal moves from the units list of available moves
-			for cell in unit.available_cells:
-				var squared_distance = unit.cell.distance_squared_to(cell)
-				if not squared_distance == 2:
-					continue
+		_check_if_unit_can_jump(unit)
 
-				unit.available_cells.erase(cell)
+
+func _check_if_unit_can_jump(unit):
+	if not unit.can_jump:
+		return false
+
+	_parent.jumpable_units.append(unit)
+	# Remove any normal moves from the units list of available moves
+	for cell in unit.available_cells:
+		var squared_distance = unit.cell.distance_squared_to(cell)
+		if not squared_distance == 2:
+			continue
+
+		unit.available_cells.erase(cell)
 
 
 func _is_cell_available(unit: Unit, initial_direction: Vector2i, target_cell: Vector2i) -> bool:
@@ -50,7 +55,7 @@ func _is_cell_available(unit: Unit, initial_direction: Vector2i, target_cell: Ve
 
 	# Can make a normal move
 	unit.available_cells.append(target_cell)
-	return unit.available_cells.size() > 0
+	return true
 
 
 func _can_jump_over_enemy(
