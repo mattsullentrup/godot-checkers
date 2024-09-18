@@ -43,7 +43,7 @@ func _check_if_unit_can_jump(unit) -> void:
 
 
 func _is_cell_available(unit: Unit, initial_direction: Vector2i, target_cell: Vector2i) -> bool:
-	if not _validate_tile(target_cell):
+	if not _is_tile_valid(target_cell):
 		return false
 
 	for unit_on_board: Unit in _parent.all_units:
@@ -115,7 +115,7 @@ func _create_jump_data(target_cell: Vector2i, jumped_cell: Vector2i) -> JumpData
 
 
 func _can_jump_to_cell(unit: Unit, target_cell: Vector2i, jumped_cell: Vector2i) -> bool:
-	if not _validate_tile(target_cell):
+	if not _is_tile_valid(target_cell):
 		return false
 
 	# Cell is occupied
@@ -128,7 +128,7 @@ func _can_jump_to_cell(unit: Unit, target_cell: Vector2i, jumped_cell: Vector2i)
 	)
 
 
-func _validate_tile(tile_pos) -> bool:
+func _is_tile_valid(tile_pos) -> bool:
 	if tile_pos.x < 0 or tile_pos.x > (Globals.GRID_SIZE - 1):
 		return false
 
