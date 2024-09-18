@@ -91,7 +91,6 @@ func _on_unit_movement_completed(unit: Unit) -> void:
 	if unit.cell.y == _other_side_of_board_y:
 		unit.is_king = true
 	# TODO: check again if unit can jump in case it has more left it can do
-	_unit_movement.check_unit_remaining_jumps(unit)
-	if unit.can_jump:
-		return
-	_end_turn()
+	#_unit_movement.check_unit_remaining_jumps(unit)
+	if unit.jump_paths.size() == 0:
+		_end_turn()
