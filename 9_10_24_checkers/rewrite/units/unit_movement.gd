@@ -10,24 +10,27 @@ func get_moveable_units() -> void:
 	for unit: Unit in _parent.units:
 		unit.available_cells.clear()
 		for direction in unit.directions:
-			# Find out if unit can move at all
-			var movement_direction: Vector2i = Globals.movement_vectors.get(direction)
-			var target_cell = unit.cell + movement_direction
-			if not _is_cell_available(unit, movement_direction, target_cell):
-				continue
+			_check_if_unit_can_move_at_all(unit, direction)
 
 		if unit.available_cells.size() <= 0:
 			continue
 
-		_parent.moveable_units.append(unit)
-		unit.can_move = true
-
 		_check_if_unit_can_jump(unit)
 
 
-func _check_if_unit_can_jump(unit):
+func _check_if_unit_can_move_at_all(unit, direction) -> void:
+	var movement_direction: Vector2i = Globals.movement_vectors.get(direction)
+	var target_cell = unit.cell + movement_direction
+	if not _is_cell_available(unit, movement_direction, target_cell):
+		return
+
+	_parent.moveable_units.append(unit)
+	unit.can_move = true
+
+
+func _check_if_unit_can_jump(unit) -> void:
 	if not unit.can_jump:
-		return false
+		return
 
 	_parent.jumpable_units.append(unit)
 	# Remove any normal moves from the units list of available moves
@@ -49,9 +52,9 @@ func _is_cell_available(unit: Unit, initial_direction: Vector2i, target_cell: Ve
 
 		if unit_on_board.team == unit.team:
 			return false
-		else:
-			if _can_jump_over_enemy(target_cell, initial_direction, unit, unit_on_board):
-				return true
+
+		if _can_jump_over_enemy(target_cell, initial_direction, unit, unit_on_board):
+			return true
 
 	# Can make a normal move
 	unit.available_cells.append(target_cell)
