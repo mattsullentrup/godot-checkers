@@ -11,7 +11,7 @@ func get_moveable_units() -> void:
 		unit.available_cells.clear()
 		for direction in unit.directions:
 			_get_unit_normal_moves(unit, direction)
-			_get_unit_jump_moves(unit)
+			_get_unit_jump_moves(unit, direction)
 
 
 func check_unit_remaining_jumps(unit: Unit) -> void:
@@ -26,10 +26,10 @@ func check_unit_remaining_jumps(unit: Unit) -> void:
 				break
 
 
-
 func _get_unit_normal_moves(unit: Unit, direction: Globals.Direction) -> void:
 	var target_cell = unit.cell + Globals.movement_vectors.get(direction)
-	if not _get_adjacent_unit(unit, target_cell) == null:
+	var adjacent_unit = _get_adjacent_unit(target_cell)
+	if not adjacent_unit == null:
 		return
 
 	_parent.moveable_units.append(unit)
@@ -37,9 +37,22 @@ func _get_unit_normal_moves(unit: Unit, direction: Globals.Direction) -> void:
 	unit.available_cells.append(target_cell)
 
 
-func _get_unit_jump_moves(unit: Unit) -> void:
+func _get_unit_jump_moves(unit: Unit, direction: Globals.Direction) -> void:
+	var adjacent_cell = unit.cell + Globals.movement_vectors.get(direction)
+	var adjacent_unit = _get_adjacent_unit(adjacent_cell)
+	if adjacent_unit == null or adjacent_unit.team == unit.team:
+		return
+
+	# There is an adjacent enemy, try to jump over it
+	var jump_target_cell: Vector2i = adjacent_cell + direction
+	if not _can_jump_over_enemy(jump_target_cell, direction, unit, adjacent_unit):
+		return
+
 	_parent.jumpable_units.append(unit)
-	# Remove any normal moves from the units list of available moves
+	_discard_normal_moves(unit)
+
+
+func _discard_normal_moves(unit: Unit) -> void:
 	for cell in unit.available_cells:
 		var squared_distance = unit.cell.distance_squared_to(cell)
 		if not squared_distance == 2:
@@ -48,7 +61,7 @@ func _get_unit_jump_moves(unit: Unit) -> void:
 		unit.available_cells.erase(cell)
 
 
-func _get_adjacent_unit(unit: Unit, target_cell: Vector2i) -> Unit:
+func _get_adjacent_unit(target_cell: Vector2i) -> Unit:
 	if not _is_tile_valid(target_cell):
 		return null
 
@@ -62,21 +75,20 @@ func _get_adjacent_unit(unit: Unit, target_cell: Vector2i) -> Unit:
 
 
 func _can_jump_over_enemy(
-			target_cell: Vector2i, initial_direction: Vector2i, \
+			jump_target_cell: Vector2i, direction: Globals.Direction, \
 			unit: Unit, enemy: Unit) -> bool:
-	var new_target_cell = target_cell + initial_direction
-	if not _can_jump_to_cell(unit, new_target_cell, enemy.cell):
+	if not _can_jump_to_cell(unit, jump_target_cell, enemy.cell):
 		return false
 
 	unit.can_jump = true
-	unit.available_cells.append(new_target_cell)
+	unit.available_cells.append(jump_target_cell)
 
-	var first_jump := JumpData.new(enemy, new_target_cell)
+	var first_jump := JumpData.new(enemy, jump_target_cell)
 	var jump_path: Array
 	jump_path.append(first_jump)
 
-	var backwards: Vector2i = target_cell - new_target_cell
-	for data in _get_valid_jump_data(unit, new_target_cell, jump_path, backwards):
+	var backwards: Vector2i = jump_target_cell - jump_target_cell
+	for data in _get_valid_jump_data(unit, jump_target_cell, jump_path, backwards):
 		var path := jump_path.duplicate()
 		path.append(data)
 		unit.jump_paths.append(path)
