@@ -43,7 +43,7 @@ func _get_unit_jump_moves(unit: Unit, direction: Globals.Direction) -> void:
 
 	# There is an adjacent enemy, try to jump over it
 	var jump_target_cell: Vector2i = adjacent_cell + movement_direction
-	if not _can_jump_over_enemy(jump_target_cell, direction, unit, adjacent_unit):
+	if not _can_jump_over_enemy(jump_target_cell, movement_direction, unit, adjacent_unit):
 		return
 
 	if not _parent.jumpable_units.has(unit):
@@ -75,18 +75,19 @@ func _get_adjacent_unit(target_cell: Vector2i) -> Unit:
 
 
 func _can_jump_over_enemy(
-			jump_target_cell: Vector2i, direction: Globals.Direction, \
+			jump_target_cell: Vector2i, direction: Vector2i, \
 			unit: Unit, enemy: Unit) -> bool:
 	if not _can_jump_to_cell(unit, jump_target_cell, enemy.cell):
 		return false
 
-	unit.available_cells.append(jump_target_cell)
+	if not unit.available_cells.has(jump_target_cell):
+		unit.available_cells.append(jump_target_cell)
 
 	var first_jump := JumpData.new(enemy, jump_target_cell)
 	var jump_path: Array
 	jump_path.append(first_jump)
 
-	var backwards: Vector2i = jump_target_cell - jump_target_cell
+	var backwards: Vector2i = -direction
 	for data in _get_valid_jump_data(unit, jump_target_cell, jump_path, backwards):
 		var path := jump_path.duplicate()
 		path.append(data)
@@ -104,7 +105,8 @@ func _get_valid_jump_data(unit: Unit, starting_cell: Vector2i, jump_path: Array,
 		if not _can_jump_to_cell(unit, new_target_cell, jumped_cell) or movement_direction == backwards:
 			continue
 
-		unit.available_cells.append(new_target_cell)
+		if not unit.available_cells.has(new_target_cell):
+			unit.available_cells.append(new_target_cell)
 
 		var jump_data := _create_jump_data(new_target_cell, jumped_cell)
 		valid_data.append(jump_data)

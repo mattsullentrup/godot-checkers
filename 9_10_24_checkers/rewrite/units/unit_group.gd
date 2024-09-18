@@ -52,7 +52,7 @@ func take_turn() -> void:
 
 	for unit: Unit in moveable_units:
 		unit.can_move = false
-
+	await get_tree().create_timer(.1).timeout
 	_unit_movement.get_moveable_units()
 
 	if jumpable_units.is_empty():
@@ -61,6 +61,7 @@ func take_turn() -> void:
 	for unit in moveable_units:
 		if not unit.can_jump:
 			unit.can_move = false
+
 	moveable_units.clear()
 	moveable_units = jumpable_units.duplicate()
 
