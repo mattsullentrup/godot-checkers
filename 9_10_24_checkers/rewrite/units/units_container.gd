@@ -55,6 +55,7 @@ func _try_to_select_unit() -> void:
 
 		get_viewport().set_input_as_handled()
 		_active_group.set_selected_unit(unit)
+		return
 
 
 func _unit_can_move_to_click() -> bool:
