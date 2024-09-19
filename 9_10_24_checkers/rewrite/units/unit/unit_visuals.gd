@@ -70,6 +70,14 @@ func jump_tween(tween: Tween) -> void:
 			.set_trans(Tween.TRANS_SINE) \
 			.set_ease(Tween.EASE_IN)
 
+	tween.parallel().tween_property(self, "_king_radius", BIG_RADIUS + KING_INITIAL_RADIUS, grow_time) \
+			.set_trans(Tween.TRANS_SINE) \
+			.set_ease(Tween.EASE_OUT)
+
+	tween.parallel().tween_property(self, "_king_radius", KING_INITIAL_RADIUS, shrink_time).set_delay(grow_time)\
+			.set_trans(Tween.TRANS_SINE) \
+			.set_ease(Tween.EASE_IN)
+
 
 func _draw_available_cells() -> void:
 	for move in _parent.available_cells:
