@@ -20,8 +20,8 @@ func generate_level() -> void:
 	_make_new_unit(_player_group, Vector2i(3, 6))
 
 	for y in [1, 3, 5]:
-		#for x in [2, 4, 6]:
-		for x in [4]:
+		for x in [2, 4, 6]:
+		#for x in [4]:
 			_make_new_unit(_opponent_group, Vector2i(x, y))
 
 

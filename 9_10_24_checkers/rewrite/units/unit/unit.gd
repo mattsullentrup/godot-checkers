@@ -59,13 +59,42 @@ func _tween_move_normally(new_cell: Vector2i) -> void:
 
 
 func _find_jump_path(new_cell: Vector2i) -> void:
-	for path: Array in jump_paths:
+	var possible_paths: Array[Array]
+	possible_paths = jump_paths.filter(
+			func(path: Array): return path.any(
+					func(x: JumpData): return x.target_cell == new_cell))
+
+	var largest_path_size: int = 0
+	#var longest_path: Array
+	for path in possible_paths:
+		if path.size() > largest_path_size:
+			#longest_path = path
+			largest_path_size = path.size()
+
+	var smallest_cell_index: int = largest_path_size - 1
+	var shortest_path_to_new_cell: Array
+	for path in possible_paths:
 		for data: JumpData in path:
 			if not data.target_cell == new_cell:
 				continue
 
-			_jump_tween_through_path(path, new_cell)
-			return
+			var new_cell_index = path.find(data)
+			if new_cell_index < smallest_cell_index:
+				shortest_path_to_new_cell = path
+				smallest_cell_index = new_cell_index
+
+	var index = possible_paths.find(shortest_path_to_new_cell)
+	var path_to_take = possible_paths[index]
+
+	_jump_tween_through_path(path_to_take, new_cell)
+
+	#for path: Array in jump_paths:
+		#for data: JumpData in path:
+			#if not data.target_cell == new_cell:
+				#continue
+#
+			#_jump_tween_through_path(path, new_cell)
+			#return
 
 
 func _jump_tween_through_path(path: Array, new_cell: Vector2i) -> void:
