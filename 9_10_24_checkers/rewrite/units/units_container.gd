@@ -28,14 +28,12 @@ func _unhandled_input(event: InputEvent) -> void:
 
 func init() -> void:
 	_player_group.team = Globals.Team.PLAYER
-	_player_group.all_units = all_units
-	_player_group.turn_completed.connect(_on_turn_completed)
-	_player_group.init()
-
 	_opponent_group.team = Globals.Team.OPPONENT
-	_opponent_group.all_units = all_units
-	_opponent_group.turn_completed.connect(_on_turn_completed)
-	_opponent_group.init()
+	for group: UnitGroup in [_player_group, _opponent_group]:
+		group.all_units = all_units
+		group.turn_completed.connect(_on_turn_completed)
+		group.defeated.connect(_end_the_battle)
+		group.init()
 
 
 func start_battle() -> void:
@@ -70,7 +68,11 @@ func _on_turn_completed(group: UnitGroup) -> void:
 	if group.units.size() > 0:
 		_step_turn()
 	else:
-		battle_over.emit(_player_group.units.size() > 0)
+		_end_the_battle()
+
+
+func _end_the_battle() -> void:
+	battle_over.emit(_player_group.units.size() > 0)
 
 
 func _step_turn() -> void:
