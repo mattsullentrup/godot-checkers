@@ -6,21 +6,14 @@ extends Node2D
 
 
 func get_moveable_units() -> void:
-	#await get_tree().create_timer(.1).timeout
 	for unit: Unit in _parent.units:
 		unit.available_cells.clear()
 		for direction in unit.directions:
 			_get_unit_normal_moves(unit, direction)
 			_get_unit_jump_moves(unit, direction)
 
-		#if _parent.jumpable_units.has(unit):
-		#if not unit.jump_paths == null:
 		if unit.can_jump:
 			_discard_normal_moves(unit)
-
-
-func check_unit_remaining_jumps(unit: Unit) -> void:
-	pass
 
 
 func _get_unit_normal_moves(unit: Unit, direction: Globals.Direction) -> void:
@@ -48,6 +41,7 @@ func _get_unit_jump_moves(unit: Unit, direction: Globals.Direction) -> void:
 
 	if not _parent.jumpable_units.has(unit):
 		_parent.jumpable_units.append(unit)
+
 	unit.can_jump = true
 	unit.can_move = true
 
@@ -66,10 +60,8 @@ func _get_adjacent_unit(target_cell: Vector2i) -> Unit:
 		return null
 
 	for unit_to_check: Unit in _parent.all_units:
-		if not unit_to_check.cell == target_cell:
-			continue
-
-		return unit_to_check
+		if unit_to_check.cell == target_cell:
+			return unit_to_check
 
 	return null
 
