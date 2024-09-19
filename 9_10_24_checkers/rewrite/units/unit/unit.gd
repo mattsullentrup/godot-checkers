@@ -65,20 +65,15 @@ func _find_jump_path(new_cell: Vector2i) -> void:
 				continue
 
 			_jump_tween_through_path(path, new_cell)
+			return
 
 
 func _jump_tween_through_path(path: Array, new_cell: Vector2i) -> void:
 	for data: JumpData in path:
+		_jump_tween(data)
+
 		if jump_path_tween:
-			jump_path_tween.kill()
-
-		jump_path_tween = create_tween()
-		_move_tween(data.target_cell, jump_path_tween)
-		_unit_visuals.jump_tween(jump_path_tween)
-
-		await jump_path_tween.finished
-		data.jumpable_unit.explode()
-
+			await jump_path_tween.finished
 		var current_cell = Navigation.world_to_cell(global_position)
 
 		_update_jump_paths(current_cell)
@@ -88,6 +83,18 @@ func _jump_tween_through_path(path: Array, new_cell: Vector2i) -> void:
 			break
 
 	_finish_moving(new_cell)
+
+
+func _jump_tween(jump_data: JumpData) -> void:
+	if jump_path_tween:
+		jump_path_tween.kill()
+
+	jump_path_tween = create_tween()
+	_move_tween(jump_data.target_cell, jump_path_tween)
+	_unit_visuals.jump_tween(jump_path_tween)
+
+	await jump_path_tween.finished
+	jump_data.jumpable_unit.explode()
 
 
 func _update_jump_paths(current_cell):
