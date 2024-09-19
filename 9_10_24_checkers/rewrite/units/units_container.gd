@@ -5,6 +5,7 @@ extends Node2D
 signal battle_over(player_won: bool)
 
 var all_units: Array[Unit]
+var can_click := true
 var _active_group: UnitGroup
 var _current_mouse_cell: Vector2i
 
@@ -13,6 +14,9 @@ var _current_mouse_cell: Vector2i
 
 
 func _unhandled_input(event: InputEvent) -> void:
+	if not can_click:
+		return
+
 	if event.is_action_pressed("left_click"):
 		_current_mouse_cell = Navigation.world_to_cell(get_global_mouse_position())
 		if not _unit_can_move_to_click():

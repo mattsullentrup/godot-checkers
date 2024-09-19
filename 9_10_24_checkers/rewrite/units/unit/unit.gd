@@ -115,7 +115,6 @@ func _jump_tween_through_path(path: Array, new_cell: Vector2i) -> void:
 		return
 
 
-
 func _update_available_cells():
 	available_cells.clear()
 	for path in jump_paths:

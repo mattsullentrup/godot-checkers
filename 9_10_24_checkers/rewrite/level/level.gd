@@ -5,6 +5,7 @@ extends Node2D
 const CELL_SIZE = 128
 const GRID_SIZE = 8
 
+@onready var _ui: CanvasLayer = %UI
 @onready var _units_container: UnitsContainer = %Units
 @onready var _level_generator: LevelGenerator = %LevelGenerator
 
@@ -18,7 +19,9 @@ func _ready() -> void:
 
 
 func _on_battle_over(player_won: bool) -> void:
+	_units_container.can_click = false
+
 	if player_won:
-		print("player won")
+		_ui.show_winner("player")
 	else:
-		print("opponent won")
+		_ui.show_winner("opponent")
