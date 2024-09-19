@@ -69,21 +69,22 @@ func _find_jump_path(new_cell: Vector2i) -> void:
 
 
 func _jump_tween_through_path(path: Array, new_cell: Vector2i) -> void:
-	for data: JumpData in path:
-		_jump_tween(data)
+	_jump_tween(path.front())
 
-		if jump_path_tween:
-			await jump_path_tween.finished
-		var current_cell = Navigation.world_to_cell(global_position)
+	if jump_path_tween:
+		await jump_path_tween.finished
 
-		_update_jump_paths(current_cell)
-		_update_available_cells()
+	var current_cell = Navigation.world_to_cell(global_position)
+	_update_jump_paths(current_cell)
+	_update_available_cells()
 
-		# Arrived at clicked cell, even if not end of path
-		if current_cell == new_cell:
-			break
+	# Arrived at clicked cell, even if not end of path
+	if current_cell == new_cell:
+		_finish_moving(new_cell)
+	else:
+		_jump_tween_through_path(path, new_cell)
+		return
 
-	_finish_moving(new_cell)
 
 
 func _update_available_cells():
