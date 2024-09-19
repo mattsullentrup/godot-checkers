@@ -98,6 +98,10 @@ func _try_to_multi_jump(first_jump_path: Array[JumpData], backwards: Vector2i, u
 		new_path.append(next_jump)
 		unit.jump_paths.append(new_path)
 
+		# Remove the shorter jump path leading up to this point since we can jump further
+		if unit.jump_paths.has(first_jump_path):
+			unit.jump_paths.erase(first_jump_path)
+
 
 func _get_next_jump(unit: Unit, starting_cell: Vector2i, direction: Vector2i) -> JumpData:
 	var jumped_cell = direction + starting_cell
