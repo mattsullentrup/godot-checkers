@@ -5,5 +5,5 @@
 [node name="OpponentUnit" instance=ExtResource("1_q2fmi")]
 directions = Array[int]([2, 3])
 normal_color = Color(0.780392, 0.0823529, 0.521569, 1)
-king_color = Color(0.859799, 0.260265, 0.844369, 1)
+king_color = Color(0.832644, 0.49195, 0.361563, 1)
 team = 1

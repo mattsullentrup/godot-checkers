@@ -14,14 +14,17 @@ func _draw() -> void:
 
 
 func generate_level() -> void:
-	#_create_units(0, 3, _opponent_group)
-	#_create_units(5, Globals.GRID_SIZE, _player_group)
+	_create_units(0, 3, _opponent_group)
+	_create_units(5, Globals.GRID_SIZE, _player_group)
 
+	#_create_test_scene()
+
+
+func _create_test_scene():
 	_make_new_unit(_player_group, Vector2i(3, 6))
 
 	for y in [1, 3, 5]:
 		for x in [2, 4, 6]:
-		#for x in [4]:
 			_make_new_unit(_opponent_group, Vector2i(x, y))
 
 

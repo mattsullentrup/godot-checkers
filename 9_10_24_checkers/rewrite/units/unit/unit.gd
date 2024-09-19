@@ -161,7 +161,7 @@ func _finish_moving(new_cell: Vector2i) -> void:
 
 func _set_is_king(value) -> void:
 	is_king = value
-	color = king_color
+	#color = king_color
 	for vector in Globals.movement_vectors:
 		#var movement_direction = Globals.movement_vectors.get(vector)
 		if not directions.has(vector):
