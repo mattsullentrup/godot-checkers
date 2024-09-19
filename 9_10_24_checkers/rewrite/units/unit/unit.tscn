@@ -1,7 +1,14 @@
-[gd_scene load_steps=6 format=3 uid="uid://do0uo4ytei58b"]
+[gd_scene load_steps=8 format=3 uid="uid://do0uo4ytei58b"]
 
 [ext_resource type="Script" path="res://rewrite/units/unit/unit.gd" id="1_w7lj1"]
 [ext_resource type="Script" path="res://rewrite/units/unit/unit_visuals.gd" id="2_80clf"]
+
+[sub_resource type="Gradient" id="Gradient_lclvo"]
+offsets = PackedFloat32Array(0, 0.135294, 0.311765, 0.564706, 0.852941, 1)
+colors = PackedColorArray(0.95, 0.92625, 0.8075, 1, 0.9, 0.858, 0.54, 1, 0.85, 0.499375, 0.2125, 1, 0.628985, 0.17657, 0.161441, 1, 0.15, 0.1125, 0.1125, 1, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_mruq0"]
+gradient = SubResource("Gradient_lclvo")
 
 [sub_resource type="Curve" id="Curve_nobl5"]
 _data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 1.4, 0, 0]
@@ -19,12 +26,13 @@ angle_max = 122.6
 spread = 180.0
 initial_velocity_min = 60.61
 initial_velocity_max = 233.77
-angular_velocity_min = -185.8
-angular_velocity_max = 214.47
 gravity = Vector3(0, 0, 0)
+linear_accel_min = -60.0
+linear_accel_max = -60.0
 scale_min = 5.0
 scale_max = 10.0
 scale_curve = SubResource("CurveTexture_kuaio")
+color_ramp = SubResource("GradientTexture1D_mruq0")
 
 [node name="Unit" type="Node2D"]
 script = ExtResource("1_w7lj1")
@@ -35,9 +43,7 @@ script = ExtResource("2_80clf")
 
 [node name="GPUParticles2D" type="GPUParticles2D" parent="."]
 z_index = 1
-emitting = false
 amount = 64
 process_material = SubResource("ParticleProcessMaterial_k3b2s")
 lifetime = 2.0
-one_shot = true
 explosiveness = 1.0

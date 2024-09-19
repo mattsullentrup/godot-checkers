@@ -14,7 +14,6 @@ const AVAILABLE_CELL_COLOR = Color("c8f294")
 
 var _radius: float = INITIAL_RADIUS
 var _king_radius: float = KING_INITIAL_RADIUS
-var _color: Color
 
 @onready var _parent: Unit = get_parent()
 @onready var _particles: GPUParticles2D = $"../GPUParticles2D"
@@ -29,7 +28,6 @@ func _ready() -> void:
 
 
 func _draw() -> void:
-	#_color = _parent.color
 	if _particles.emitting:
 		return
 
@@ -56,9 +54,9 @@ func _process(_delta: float) -> void:
 
 
 func explode() -> void:
-	_particles.process_material.color = _color
+	#_particles.process_material.color = _color
 	_particles.emitting = true
-	await _particles.finished
+	#await _particles.finished
 
 
 func jump_tween(tween: Tween) -> void:
