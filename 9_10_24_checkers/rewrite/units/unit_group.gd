@@ -92,5 +92,8 @@ func _on_unit_movement_completed(unit: Unit) -> void:
 		unit.is_king = true
 	# TODO: check again if unit can jump in case it has more left it can do
 	#_unit_movement.check_unit_remaining_jumps(unit)
-	if unit.jump_paths.size() == 0:
+	#if unit.jump_paths.size() == 0:
+	if unit.jump_paths.all(func(x: Array): return x.is_empty()):
 		_end_turn()
+	else:
+		unit.can_move = true
