@@ -18,6 +18,9 @@ func get_moveable_units() -> void:
 
 func _get_unit_normal_moves(unit: Unit, direction: Globals.Direction) -> void:
 	var target_cell = unit.cell + Globals.movement_vectors.get(direction)
+	if not _is_tile_valid(target_cell):
+		return
+
 	var adjacent_unit = _get_adjacent_unit(target_cell)
 	if not adjacent_unit == null:
 		return
@@ -56,9 +59,6 @@ func _discard_normal_moves(unit: Unit) -> void:
 
 
 func _get_adjacent_unit(target_cell: Vector2i) -> Unit:
-	if not _is_tile_valid(target_cell):
-		return null
-
 	for unit_to_check: Unit in _parent.all_units:
 		if unit_to_check.cell == target_cell:
 			return unit_to_check
@@ -81,7 +81,7 @@ func _can_jump_over_enemy(
 	unit.jump_paths.append(jump_path)
 
 	var backwards: Vector2i = -direction
-	for data in _get_valid_jump_data(unit, jump_target_cell, jump_path, backwards):
+	for data in _get_multi_jump_path(unit, jump_target_cell, jump_path, backwards):
 		var path := jump_path.duplicate()
 		path.append(data)
 		unit.jump_paths.append(path)
@@ -89,7 +89,7 @@ func _can_jump_over_enemy(
 	return true
 
 
-func _get_valid_jump_data(unit: Unit, starting_cell: Vector2i, jump_path: Array, backwards: Vector2i) -> Array[JumpData]:
+func _get_multi_jump_path(unit: Unit, starting_cell: Vector2i, jump_path: Array, backwards: Vector2i) -> Array[JumpData]:
 	var valid_data: Array[JumpData]
 	for direction in unit.directions:
 		var movement_direction = Globals.movement_vectors.get(direction)
