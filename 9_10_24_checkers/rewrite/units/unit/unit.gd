@@ -65,10 +65,8 @@ func _find_jump_path(new_cell: Vector2i) -> void:
 					func(x: JumpData): return x.target_cell == new_cell))
 
 	var largest_path_size: int = 0
-	#var longest_path: Array
 	for path in possible_paths:
 		if path.size() > largest_path_size:
-			#longest_path = path
 			largest_path_size = path.size()
 
 	var smallest_cell_index: int = largest_path_size - 1
@@ -87,14 +85,6 @@ func _find_jump_path(new_cell: Vector2i) -> void:
 	var path_to_take = possible_paths[index]
 
 	_jump_tween_through_path(path_to_take, new_cell)
-
-	#for path: Array in jump_paths:
-		#for data: JumpData in path:
-			#if not data.target_cell == new_cell:
-				#continue
-#
-			#_jump_tween_through_path(path, new_cell)
-			#return
 
 
 func _jump_tween_through_path(path: Array, new_cell: Vector2i) -> void:
@@ -160,8 +150,6 @@ func _finish_moving(new_cell: Vector2i) -> void:
 
 func _set_is_king(value) -> void:
 	is_king = value
-	#color = king_color
 	for vector in Globals.movement_vectors:
-		#var movement_direction = Globals.movement_vectors.get(vector)
 		if not directions.has(vector):
 			directions.append(vector)
