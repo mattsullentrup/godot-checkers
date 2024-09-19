@@ -137,14 +137,11 @@ func _jump_tween(jump_data: JumpData) -> void:
 
 
 func _update_jump_paths(current_cell):
-	# Delete any path that doesn't follow the current one
-	# We only want to save ones that branch off after being the same so far
+	# Delete any path that doesn't start at the current cell
 	jump_paths = jump_paths.filter(
-			func(path: Array): return path.any(
-					func(x: JumpData): return x.target_cell == current_cell))
+		func(path: Array): return path.front().target_cell == current_cell)
 
-	# Remove any data in any path whose target cell is where this unit is at currently
-	# This is so we don't have to recreate all paths just because the unit stopped in the middle
+	# Update any remaining jump paths so they start at the current_cell
 	for jump_path: Array in jump_paths:
 		jump_path.remove_at(0)
 
