@@ -22,6 +22,6 @@ func _on_battle_over(player_won: bool) -> void:
 	_units_container.can_click = false
 
 	if player_won:
-		_ui.show_winner("player")
+		_ui.show_winner("Player")
 	else:
-		_ui.show_winner("opponent")
+		_ui.show_winner("Opponent")
