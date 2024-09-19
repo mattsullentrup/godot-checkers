@@ -77,12 +77,21 @@ func _jump_tween_through_path(path: Array, new_cell: Vector2i) -> void:
 		var current_cell = Navigation.world_to_cell(global_position)
 
 		_update_jump_paths(current_cell)
+		_update_available_cells()
 
 		# Arrived at clicked cell, even if not end of path
 		if current_cell == new_cell:
 			break
 
 	_finish_moving(new_cell)
+
+
+func _update_available_cells():
+	available_cells.clear()
+	for path in jump_paths:
+		for data: JumpData in path:
+			if not available_cells.has(data.target_cell):
+				available_cells.append(data.target_cell)
 
 
 func _jump_tween(jump_data: JumpData) -> void:
