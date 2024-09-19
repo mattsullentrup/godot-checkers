@@ -41,7 +41,7 @@ func _get_unit_jump_moves(unit: Unit, direction: Globals.Direction) -> void:
 	var jump_target_cell: Vector2i = adjacent_cell + movement_direction
 	var first_jump_path = _get_first_jump_path(unit, jump_target_cell, adjacent_unit)
 	if not first_jump_path.is_empty():
-		_try_to_multi_jump(first_jump_path, -movement_direction, unit)
+		_try_to_multi_jump(first_jump_path, -movement_direction, unit, first_jump_path.front().target_cell)
 
 
 func _get_first_jump_path(unit: Unit, jump_target_cell: Vector2i, adjacent_unit: Unit) -> Array[JumpData]:
@@ -82,25 +82,31 @@ func _get_adjacent_unit(target_cell: Vector2i) -> Unit:
 	return null
 
 
-func _try_to_multi_jump(first_jump_path: Array[JumpData], backwards: Vector2i, unit: Unit):
-	#var new_path := first_jump_path.duplicate()
-	var starting_cell: Vector2i = first_jump_path.front().target_cell
+func _try_to_multi_jump(jump_path: Array[JumpData], backwards: Vector2i, unit: Unit, starting_cell):
+	#var new_path := jump_path.duplicate()
+	#var starting_cell: Vector2i = jump_path.front().target_cell
 	for direction in unit.directions:
 		var movement_direction = Globals.movement_vectors.get(direction)
 		if movement_direction == backwards:
 			continue
 
-		var next_jump = _get_next_jump(unit, starting_cell, movement_direction)
+		var next_jump := _get_next_jump(unit, starting_cell, movement_direction)
 		if next_jump == null:
 			continue
 
-		var new_path := first_jump_path.duplicate()
+		# Stop if this enemy has already been jumped in this path to avoid infinite recursion
+		if jump_path.any(func(x: JumpData): return next_jump.jumpable_unit == x.jumpable_unit):
+			continue
+
+		# Remove the shorter jump path leading up to this point since we can jump further
+		if unit.jump_paths.has(jump_path):
+			unit.jump_paths.erase(jump_path)
+
+		var new_path := jump_path.duplicate()
 		new_path.append(next_jump)
 		unit.jump_paths.append(new_path)
 
-		# Remove the shorter jump path leading up to this point since we can jump further
-		if unit.jump_paths.has(first_jump_path):
-			unit.jump_paths.erase(first_jump_path)
+		_try_to_multi_jump(new_path, -movement_direction, unit, next_jump.target_cell)
 
 
 func _get_next_jump(unit: Unit, starting_cell: Vector2i, direction: Vector2i) -> JumpData:
