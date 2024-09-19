@@ -78,6 +78,7 @@ func _can_jump_over_enemy(
 	var first_jump := JumpData.new(enemy, jump_target_cell)
 	var jump_path: Array
 	jump_path.append(first_jump)
+	unit.jump_paths.append(jump_path)
 
 	var backwards: Vector2i = -direction
 	for data in _get_valid_jump_data(unit, jump_target_cell, jump_path, backwards):
