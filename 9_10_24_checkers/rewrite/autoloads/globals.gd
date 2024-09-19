@@ -16,6 +16,7 @@ enum Direction {
 const CELL_SIZE = 128
 const GRID_SIZE = 8
 const INVALID_CELL = Vector2i.MIN
+const ADJACENT_CELL_SQUARED_DISTANCE = 2
 
 var movement_vectors := {}
 

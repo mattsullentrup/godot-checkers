@@ -133,7 +133,8 @@ func _finish_moving(new_cell: Vector2i) -> void:
 	z_index -= 1
 
 
-func _set_is_king(_value) -> void:
+func _set_is_king(value) -> void:
+	is_king = value
 	color = king_color
 	for vector in Globals.movement_vectors:
 		#var movement_direction = Globals.movement_vectors.get(vector)

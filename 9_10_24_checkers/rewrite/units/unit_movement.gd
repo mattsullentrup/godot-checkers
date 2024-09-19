@@ -66,12 +66,10 @@ func _get_first_jump_path(unit: Unit, jump_target_cell: Vector2i, adjacent_unit:
 
 
 func _discard_normal_moves(unit: Unit) -> void:
-	for cell in unit.available_cells:
-		var squared_distance = unit.cell.distance_squared_to(cell)
-		if not squared_distance == 2:
-			continue
-
-		unit.available_cells.erase(cell)
+	unit.available_cells = unit.available_cells.filter(
+			func(x: Vector2i): return not unit.cell.distance_squared_to(x) \
+					== Globals.ADJACENT_CELL_SQUARED_DISTANCE
+	)
 
 
 func _get_adjacent_unit(target_cell: Vector2i) -> Unit:
@@ -83,8 +81,6 @@ func _get_adjacent_unit(target_cell: Vector2i) -> Unit:
 
 
 func _try_to_multi_jump(jump_path: Array[JumpData], backwards: Vector2i, unit: Unit, starting_cell):
-	#var new_path := jump_path.duplicate()
-	#var starting_cell: Vector2i = jump_path.front().target_cell
 	for direction in unit.directions:
 		var movement_direction = Globals.movement_vectors.get(direction)
 		if movement_direction == backwards:
@@ -140,7 +136,7 @@ func _can_jump_to_cell(unit: Unit, target_cell: Vector2i, jumped_cell: Vector2i)
 		return false
 
 	# Cell is occupied
-	if _parent.all_units.any(func(x: Unit): return x.cell == target_cell):
+	if _parent.all_units.any(func(x: Unit): return x.cell == target_cell and not x == unit):
 		return false
 
 	# Will jump over an enemy, not a teammate
