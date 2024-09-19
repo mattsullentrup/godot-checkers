@@ -100,23 +100,7 @@ func _update_jump_paths(current_cell):
 	# Remove any data in any path whose target cell is where this unit is at currently
 	# This is so we don't have to recreate all paths just because the unit stopped in the middle
 	for jump_path: Array in jump_paths:
-		#var new_path = jump_path.filter(func(x: JumpData): return not x.target_cell == current_cell)
-		var new_path: Array
-		for jump_data: JumpData in jump_path:
-			if not jump_data.target_cell == current_cell:
-				new_path.append(jump_data)
-
-		jump_path = new_path
-
-	#jump_paths = jump_paths.filter(
-			#func(path: Array): return path.filter(
-					#func(x: JumpData): return not x.target_cell == current_cell))
-
-	pass
-	#for jump_path in jump_paths:
-		#for jump_data: JumpData in jump_path:
-			#if jump_data.target_cell == current_cell:
-				#jump_path.erase(jump_data)
+		jump_path.remove_at(0)
 
 
 func _move_tween(new_cell, tween) -> void:
