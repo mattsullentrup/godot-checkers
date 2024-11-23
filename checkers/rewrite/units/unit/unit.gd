@@ -35,6 +35,7 @@ func _ready() -> void:
 func explode() -> void:
 	unit_defeated.emit(self)
 	_unit_visuals.explode()
+	%ExplosionSound.play()
 	await $GPUParticles2D.finished
 	queue_free()
 

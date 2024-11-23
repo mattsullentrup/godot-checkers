@@ -1,10 +1,13 @@
-[gd_scene load_steps=9 format=3 uid="uid://do0uo4ytei58b"]
+[gd_scene load_steps=12 format=3 uid="uid://do0uo4ytei58b"]
 
 [ext_resource type="Script" path="res://rewrite/units/unit/unit.gd" id="1_w7lj1"]
 [ext_resource type="Script" path="res://rewrite/units/unit/unit_visuals.gd" id="2_80clf"]
 [ext_resource type="Texture2D" uid="uid://dyaps3vy6o0xs" path="res://addons/smoke_01.png" id="3_ajb1t"]
 [ext_resource type="Texture2D" uid="uid://cg8wfhx813dx5" path="res://addons/scorch_02.png" id="4_ksojf"]
 [ext_resource type="Script" path="res://rewrite/units/unit/explosion_texture.gd" id="5_abw2g"]
+[ext_resource type="AudioStream" uid="uid://civha6i6rrf4r" path="res://addons/chips-handle-4.ogg" id="6_h4cbv"]
+[ext_resource type="AudioStream" uid="uid://bugbl34gswcmo" path="res://addons/chips-stack-4.ogg" id="7_kenjq"]
+[ext_resource type="AudioStream" uid="uid://0jg3jueql3ii" path="res://addons/explosion1.ogg" id="8_bf20y"]
 
 [sub_resource type="Curve" id="Curve_nobl5"]
 _data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 1.4, 0, 0]
@@ -51,3 +54,24 @@ texture = ExtResource("3_ajb1t")
 lifetime = 1.5
 one_shot = true
 explosiveness = 1.0
+
+[node name="Audio" type="Node" parent="."]
+
+[node name="ChipSlideSound" type="AudioStreamPlayer" parent="Audio"]
+unique_name_in_owner = true
+stream = ExtResource("6_h4cbv")
+volume_db = -10.0
+bus = &"ChipsFX"
+
+[node name="ChipStackSound" type="AudioStreamPlayer" parent="Audio"]
+unique_name_in_owner = true
+stream = ExtResource("7_kenjq")
+volume_db = -8.0
+bus = &"ChipsFX"
+
+[node name="ExplosionSound" type="AudioStreamPlayer" parent="Audio"]
+unique_name_in_owner = true
+stream = ExtResource("8_bf20y")
+volume_db = -10.0
+max_polyphony = 3
+bus = &"FX"
