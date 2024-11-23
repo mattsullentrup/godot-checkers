@@ -1,14 +1,10 @@
-[gd_scene load_steps=8 format=3 uid="uid://do0uo4ytei58b"]
+[gd_scene load_steps=9 format=3 uid="uid://do0uo4ytei58b"]
 
 [ext_resource type="Script" path="res://rewrite/units/unit/unit.gd" id="1_w7lj1"]
 [ext_resource type="Script" path="res://rewrite/units/unit/unit_visuals.gd" id="2_80clf"]
-
-[sub_resource type="Gradient" id="Gradient_lclvo"]
-offsets = PackedFloat32Array(0, 0.135294, 0.311765, 0.564706, 0.852941, 1)
-colors = PackedColorArray(0.95, 0.92625, 0.8075, 1, 0.9, 0.858, 0.54, 1, 0.85, 0.499375, 0.2125, 1, 0.628985, 0.17657, 0.161441, 1, 0.15, 0.1125, 0.1125, 1, 1, 1, 1, 0)
-
-[sub_resource type="GradientTexture1D" id="GradientTexture1D_mruq0"]
-gradient = SubResource("Gradient_lclvo")
+[ext_resource type="Texture2D" uid="uid://dyaps3vy6o0xs" path="res://addons/smoke_01.png" id="3_ajb1t"]
+[ext_resource type="Texture2D" uid="uid://cg8wfhx813dx5" path="res://addons/scorch_02.png" id="4_ksojf"]
+[ext_resource type="Script" path="res://rewrite/units/unit/explosion_texture.gd" id="5_abw2g"]
 
 [sub_resource type="Curve" id="Curve_nobl5"]
 _data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 1.4, 0, 0]
@@ -19,20 +15,18 @@ metadata/_snap_enabled = true
 curve = SubResource("Curve_nobl5")
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_k3b2s"]
+lifetime_randomness = 1.0
 emission_shape = 2
-emission_sphere_radius = 22.14
-angle_min = -108.4
-angle_max = 122.6
+emission_sphere_radius = 32.52
 spread = 180.0
 initial_velocity_min = 60.61
-initial_velocity_max = 233.77
+initial_velocity_max = 96.37
 gravity = Vector3(0, 0, 0)
 linear_accel_min = -60.0
 linear_accel_max = -60.0
-scale_min = 5.0
-scale_max = 10.0
+scale_min = 0.1
+scale_max = 0.15
 scale_curve = SubResource("CurveTexture_kuaio")
-color_ramp = SubResource("GradientTexture1D_mruq0")
 
 [node name="Unit" type="Node2D"]
 script = ExtResource("1_w7lj1")
@@ -41,11 +35,19 @@ script = ExtResource("1_w7lj1")
 unique_name_in_owner = true
 script = ExtResource("2_80clf")
 
+[node name="ExplosionTexture" type="Sprite2D" parent="."]
+unique_name_in_owner = true
+modulate = Color(1, 0.587, 0.41, 0.698039)
+z_index = 1
+texture = ExtResource("4_ksojf")
+script = ExtResource("5_abw2g")
+
 [node name="GPUParticles2D" type="GPUParticles2D" parent="."]
 z_index = 1
 emitting = false
-amount = 64
+amount = 32
 process_material = SubResource("ParticleProcessMaterial_k3b2s")
-lifetime = 2.0
+texture = ExtResource("3_ajb1t")
+lifetime = 1.5
 one_shot = true
 explosiveness = 1.0
