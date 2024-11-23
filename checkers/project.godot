@@ -26,6 +26,10 @@ Navigation="*res://rewrite/autoloads/navigation.gd"
 window/size/viewport_width=1024
 window/size/viewport_height=1024
 
+[dotnet]
+
+project/assembly_name="9_10_24_checkers"
+
 [file_customization]
 
 folder_colors={
