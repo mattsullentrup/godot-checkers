@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://7rng3jsdgwhx"]
+[gd_scene load_steps=10 format=3 uid="uid://7rng3jsdgwhx"]
 
 [ext_resource type="Script" path="res://rewrite/level/level.gd" id="1_25vf3"]
 [ext_resource type="Script" path="res://rewrite/level/level_generator.gd" id="1_pjm2a"]
@@ -6,6 +6,54 @@
 [ext_resource type="PackedScene" uid="uid://cikidu87xgf1b" path="res://rewrite/units/unit_group.tscn" id="4_8u215"]
 [ext_resource type="AudioStream" uid="uid://htf2dsatqm6s" path="res://addons/jingles-steel_08.ogg" id="6_eirjd"]
 [ext_resource type="Script" path="res://rewrite/ui/ui.gd" id="6_rd7dn"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_yhhqa"]
+content_margin_left = 30.0
+content_margin_top = 10.0
+content_margin_right = 30.0
+content_margin_bottom = 10.0
+bg_color = Color(0.61013, 0.74, 0.4514, 1)
+border_width_left = 6
+border_width_top = 6
+border_width_right = 6
+border_width_bottom = 6
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1mfmo"]
+content_margin_left = 30.0
+content_margin_top = 10.0
+content_margin_right = 30.0
+content_margin_bottom = 10.0
+bg_color = Color(0.8785, 1, 0.73, 1)
+border_width_left = 6
+border_width_top = 6
+border_width_right = 6
+border_width_bottom = 6
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_sbd4a"]
+content_margin_left = 30.0
+content_margin_top = 10.0
+content_margin_right = 30.0
+content_margin_bottom = 10.0
+bg_color = Color(0.733805, 0.89, 0.5429, 1)
+border_width_left = 6
+border_width_top = 6
+border_width_right = 6
+border_width_bottom = 6
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
 
 [node name="Level" type="Node2D"]
 script = ExtResource("1_25vf3")
@@ -60,8 +108,15 @@ horizontal_alignment = 1
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 4
-theme_override_font_sizes/font_size = 64
-text = "Start"
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_constants/outline_size = 12
+theme_override_font_sizes/font_size = 68
+theme_override_styles/focus = SubResource("StyleBoxFlat_yhhqa")
+theme_override_styles/hover_pressed = SubResource("StyleBoxFlat_1mfmo")
+theme_override_styles/hover = SubResource("StyleBoxFlat_yhhqa")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_1mfmo")
+theme_override_styles/normal = SubResource("StyleBoxFlat_sbd4a")
+text = "Restart"
 
 [node name="WinSound" type="AudioStreamPlayer" parent="."]
 unique_name_in_owner = true
