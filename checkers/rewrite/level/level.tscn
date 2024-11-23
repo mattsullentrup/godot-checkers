@@ -68,15 +68,28 @@ text = "Start"
 [node name="Audio" type="Node" parent="."]
 
 [node name="WinSound" type="AudioStreamPlayer" parent="Audio"]
+unique_name_in_owner = true
 stream = ExtResource("6_eirjd")
+volume_db = -6.0
+bus = &"FX"
 
 [node name="ChipSlideSound" type="AudioStreamPlayer" parent="Audio"]
+unique_name_in_owner = true
 stream = ExtResource("7_j1ya5")
+volume_db = -10.0
+bus = &"ChipsFX"
 
 [node name="ChipStackSound" type="AudioStreamPlayer" parent="Audio"]
+unique_name_in_owner = true
 stream = ExtResource("8_pem18")
+volume_db = -6.0
+bus = &"ChipsFX"
 
 [node name="ExplosionSound" type="AudioStreamPlayer" parent="Audio"]
+unique_name_in_owner = true
 stream = ExtResource("9_pysuh")
+volume_db = -10.0
+max_polyphony = 3
+bus = &"FX"
 
 [connection signal="pressed" from="UI/EndGameVBoxContainer/NewGameButton" to="UI" method="_on_new_game_button_pressed"]

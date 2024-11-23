@@ -1,0 +1,42 @@
+[gd_resource type="AudioBusLayout" load_steps=4 format=3 uid="uid://bfc1ou5vicgxg"]
+
+[sub_resource type="AudioEffectLimiter" id="AudioEffectLimiter_f6wbw"]
+resource_name = "Limiter"
+ceiling_db = -2.0
+threshold_db = -6.0
+
+[sub_resource type="AudioEffectReverb" id="AudioEffectReverb_fecir"]
+resource_name = "Reverb"
+predelay_feedback = 0.1
+room_size = 0.2
+damping = 1.0
+spread = 0.58
+wet = 0.07
+
+[sub_resource type="AudioEffectReverb" id="AudioEffectReverb_tsxn8"]
+resource_name = "Reverb"
+predelay_feedback = 0.1
+room_size = 0.5
+damping = 0.8
+spread = 0.5
+wet = 0.1
+
+[resource]
+bus/0/effect/0/effect = SubResource("AudioEffectLimiter_f6wbw")
+bus/0/effect/0/enabled = true
+bus/1/name = &"ChipsFX"
+bus/1/solo = false
+bus/1/mute = false
+bus/1/bypass_fx = false
+bus/1/volume_db = -5.93075
+bus/1/send = &"Master"
+bus/1/effect/0/effect = SubResource("AudioEffectReverb_fecir")
+bus/1/effect/0/enabled = true
+bus/2/name = &"FX"
+bus/2/solo = false
+bus/2/mute = false
+bus/2/bypass_fx = false
+bus/2/volume_db = -6.25101
+bus/2/send = &"Master"
+bus/2/effect/0/effect = SubResource("AudioEffectReverb_tsxn8")
+bus/2/effect/0/enabled = true

@@ -49,6 +49,7 @@ func move(new_cell: Vector2i) -> void:
 
 
 func _tween_move_normally(new_cell: Vector2i) -> void:
+	%ChipSlideSound.play()
 	if normal_move_tween:
 		normal_move_tween.kill()
 
@@ -149,6 +150,7 @@ func _finish_moving(new_cell: Vector2i) -> void:
 
 
 func _set_is_king(value) -> void:
+	%ChipStackSound.play()
 	is_king = value
 	for vector in Globals.movement_vectors:
 		if not directions.has(vector):

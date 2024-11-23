@@ -21,6 +21,7 @@ func _ready() -> void:
 func _on_battle_over(player_won: bool) -> void:
 	_units_container.can_click = false
 
+	%WinSound.play()
 	if player_won:
 		_ui.show_winner("Player")
 	else:

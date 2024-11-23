@@ -1,8 +1,6 @@
 extends Sprite2D
 
 
-#const GROW_DURATION = 5
-#const SHRINK_DURATION = 5
 const GROW_DURATION = 0.15
 const SHRINK_DURATION = 0.2
 
