@@ -10,7 +10,7 @@ config_version=5
 
 [application]
 
-config/name="9_10_24_checkers"
+config/name="checkers"
 config/tags=PackedStringArray("experiment")
 run/main_scene="res://rewrite/level/level.tscn"
 config/features=PackedStringArray("4.3", "GL Compatibility")
@@ -33,7 +33,6 @@ project/assembly_name="9_10_24_checkers"
 [file_customization]
 
 folder_colors={
-"res://old/": "gray",
 "res://rewrite/": "red",
 "res://rewrite/autoloads/": "blue",
 "res://rewrite/level/": "orange",
