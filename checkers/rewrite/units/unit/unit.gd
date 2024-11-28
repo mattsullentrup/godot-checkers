@@ -146,8 +146,8 @@ func _move_tween(new_cell, tween) -> void:
 
 func _finish_moving(new_cell: Vector2i) -> void:
 	cell = new_cell
-	movement_completed.emit(self)
 	z_index -= 1
+	movement_completed.emit(self)
 
 
 func _set_is_king(value) -> void:

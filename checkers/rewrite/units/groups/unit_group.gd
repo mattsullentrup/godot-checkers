@@ -48,13 +48,12 @@ func _disconnect_selected_unit_signal() -> void:
 func take_turn() -> void:
 	if selected_unit:
 		_disconnect_selected_unit_signal()
-	selected_unit = null
 
+	selected_unit = null
 	for unit: Unit in moveable_units:
 		unit.can_move = false
-	#for unit in units:
-		#unit.is_king = true
-	await get_tree().create_timer(.1).timeout
+
+	await get_tree().create_timer(0.1).timeout
 	_unit_movement.get_moveable_units()
 
 	if jumpable_units.is_empty():
@@ -90,10 +89,10 @@ func _on_unit_defeated(unit: Unit) -> void:
 
 
 func _on_unit_movement_completed(unit: Unit) -> void:
-	if unit.jump_paths.all(func(x: Array): return x.is_empty()):
+	if unit.cell.y == _other_side_of_board_y:
+		unit.is_king = true
+
+	if unit.jump_paths.all(func(x: Array) -> bool: return x.is_empty()):
 		_end_turn()
 	else:
 		unit.can_move = true
-
-	if unit.cell.y == _other_side_of_board_y:
-		unit.is_king = true
