@@ -2,9 +2,6 @@ class_name Level
 extends Node2D
 
 
-const CELL_SIZE = 128
-const GRID_SIZE = 8
-
 @onready var _ui: CanvasLayer = %UI
 @onready var _units_container: UnitsContainer = %Units
 @onready var _level_generator: LevelGenerator = %LevelGenerator

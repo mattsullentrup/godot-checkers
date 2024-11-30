@@ -46,6 +46,21 @@ func start_battle() -> void:
 	_player_group.take_turn()
 
 
+func get_board_evaluation() -> int:
+	var player_kings: int
+	var opponent_kings: int
+	for unit in _player_group.units:
+		if unit.is_king:
+			player_kings += 1
+
+	for unit in _opponent_group.units:
+		if unit.is_king:
+			opponent_kings += 1
+
+	return _player_group.units.size() - _opponent_group.units.size() \
+			+ (player_kings * 0.5 - opponent_kings * 0.5)
+
+
 func _try_to_select_unit() -> void:
 	for unit in _active_group.units:
 		if (
