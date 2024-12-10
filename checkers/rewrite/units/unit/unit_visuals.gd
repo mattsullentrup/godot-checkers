@@ -54,10 +54,8 @@ func _process(_delta: float) -> void:
 
 
 func explode() -> void:
-	#_particles.process_material.color = _color
 	_particles.emitting = true
 	%ExplosionTexture.explode()
-
 
 
 func jump_tween(tween: Tween) -> void:

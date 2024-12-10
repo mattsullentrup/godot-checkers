@@ -46,9 +46,23 @@ func start_battle() -> void:
 	_player_group.take_turn()
 
 
+func get_board_state() -> Array:
+	var board := []
+	for y in Globals.GRID_SIZE:
+		var row := []
+		for x in Globals.GRID_SIZE:
+			row.append(null)
+		board.append(row)
+
+	for unit: Unit in all_units:
+		board[unit.cell.y][unit.cell.x] = unit
+
+	return board
+
+
 func get_board_evaluation() -> int:
-	var player_kings: int
-	var opponent_kings: int
+	var player_kings: int = 0
+	var opponent_kings: int = 0
 	for unit in _player_group.units:
 		if unit.is_king:
 			player_kings += 1
@@ -77,7 +91,7 @@ func _try_to_select_unit() -> void:
 
 func _unit_can_move_to_click() -> bool:
 	return (
-			_active_group.selected_unit \
+			_active_group.selected_unit
 			and _current_mouse_cell in _active_group.selected_unit.available_cells
 			and _active_group.selected_unit.can_move == true
 	)
