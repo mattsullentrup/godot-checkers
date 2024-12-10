@@ -41,38 +41,9 @@ func init() -> void:
 
 
 func start_battle() -> void:
-	_get_all_units()
+	all_units = _get_all_units()
 	_active_group = _player_group
 	_player_group.take_turn()
-
-
-func get_board_state() -> Array:
-	var board := []
-	for y in Globals.GRID_SIZE:
-		var row := []
-		for x in Globals.GRID_SIZE:
-			row.append(null)
-		board.append(row)
-
-	for unit: Unit in all_units:
-		board[unit.cell.y][unit.cell.x] = unit
-
-	return board
-
-
-func get_board_evaluation() -> int:
-	var player_kings: int = 0
-	var opponent_kings: int = 0
-	for unit in _player_group.units:
-		if unit.is_king:
-			player_kings += 1
-
-	for unit in _opponent_group.units:
-		if unit.is_king:
-			opponent_kings += 1
-
-	return _player_group.units.size() - _opponent_group.units.size() \
-			+ (player_kings * 0.5 - opponent_kings * 0.5)
 
 
 func _try_to_select_unit() -> void:
@@ -117,6 +88,8 @@ func _step_turn() -> void:
 		_player_group.take_turn()
 
 
-func _get_all_units() -> void:
-	all_units.assign(_player_group.units)
-	all_units.append_array(_opponent_group.units)
+func _get_all_units() -> Array:
+	var result := []
+	result.assign(_player_group.units)
+	result.append_array(_opponent_group.units)
+	return result
