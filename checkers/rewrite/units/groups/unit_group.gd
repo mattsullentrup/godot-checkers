@@ -12,7 +12,8 @@ signal defeated
 var units: Array[Unit]
 var moveable_units: Array[Unit]
 var jumpable_units: Array[Unit]
-var all_units: Array[Unit]
+#var all_units: Array[Unit]
+var board: Array
 var selected_unit: Unit
 
 @onready var _unit_movement: UnitMovement = %UnitMovement
@@ -53,8 +54,7 @@ func take_turn() -> void:
 	for unit: Unit in moveable_units:
 		unit.can_move = false
 
-	_unit_movement.parent = self.duplicate()
-	_unit_movement.get_moveable_units()
+	moveable_units = _unit_movement.get_moveable_units(board)
 
 	if jumpable_units.is_empty():
 		return
@@ -83,12 +83,17 @@ func _end_turn() -> void:
 
 func _on_unit_defeated(unit: Unit) -> void:
 	units.erase(unit)
-	all_units.erase(unit)
+	for row: Array in board:
+		if row.has(unit):
+			row.erase(unit)
+
 	if units.is_empty():
 		defeated.emit()
 
 
-func _on_unit_movement_completed(unit: Unit) -> void:
+func _on_unit_movement_completed(unit: Unit, start_cell: Vector2i) -> void:
+	board[start_cell.y][start_cell.x] = null
+	board[unit.cell.y][unit.cell.x] = unit
 	if unit.cell.y == _other_side_of_board_y:
 		unit.is_king = true
 

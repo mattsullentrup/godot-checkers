@@ -6,43 +6,59 @@ extends Node2D
 @onready var parent: UnitGroup = get_parent()
 
 
-func get_moveable_units() -> void:
+func get_moveable_units(board: Array[Array]) -> Array[Unit]:
+	var result = []
 	for unit: Unit in parent.units:
 		unit.available_cells.clear()
-		for direction in unit.directions:
-			_get_unit_normal_moves(unit, direction)
-			_get_unit_jump_moves(unit, direction)
+		if _can_unit_move(unit):
+			result.append(unit)
+		#_get_unit_jump_moves(unit, direction)
 
-		if unit.can_jump:
-			_discard_normal_moves(unit)
+		#if unit.can_jump:
+			#_discard_normal_moves(unit)
 
-
-func _get_unit_normal_moves(unit: Unit, direction: Globals.Direction) -> void:
-	var target_cell = unit.cell + Globals.movement_vectors.get(direction)
-	if not _is_tile_valid(target_cell):
-		return
-
-	var adjacent_unit = _get_adjacent_unit(target_cell)
-	if not adjacent_unit == null:
-		return
-
-	parent.moveable_units.append(unit)
-	unit.can_move = true
-	unit.available_cells.append(target_cell)
+	return result
 
 
-func _get_unit_jump_moves(unit: Unit, direction: Globals.Direction) -> void:
+func _can_unit_move(unit: Unit) -> bool:
+	var normal_moves = []
+	for direction in unit.directions:
+		if _can_unit_jump(unit, direction):
+			unit.can_move = true
+			normal_moves.clear()
+			continue
+
+		var target_cell = unit.cell + Globals.movement_vectors.get(direction)
+		if not _is_tile_valid(target_cell):
+			break
+
+		var adjacent_unit = _get_adjacent_unit(target_cell)
+		if not adjacent_unit == null:
+			break
+
+		unit.can_move = true
+		normal_moves.append(target_cell)
+
+	if normal_moves:
+		unit.available_cells = normal_moves
+
+	return not unit.available_cells.is_empty()
+
+
+func _can_unit_jump(unit: Unit, direction: Globals.Direction) -> bool:
 	var movement_direction = Globals.movement_vectors.get(direction)
 	var adjacent_cell = unit.cell + movement_direction
 	var adjacent_unit = _get_adjacent_unit(adjacent_cell)
 	if adjacent_unit == null or adjacent_unit.team == unit.team:
-		return
+		return false
 
 	# There is an adjacent enemy, try to jump over it
 	var jump_target_cell: Vector2i = adjacent_cell + movement_direction
 	var first_jump_path = _get_first_jump_path(unit, jump_target_cell, adjacent_unit)
 	if not first_jump_path.is_empty():
 		_try_to_multi_jump(first_jump_path, -movement_direction, unit, first_jump_path.front().target_cell)
+		return true
+	return false
 
 
 func _get_first_jump_path(unit: Unit, jump_target_cell: Vector2i, adjacent_unit: Unit) -> Array[JumpData]:
@@ -74,7 +90,7 @@ func _discard_normal_moves(unit: Unit) -> void:
 
 
 func _get_adjacent_unit(target_cell: Vector2i) -> Unit:
-	for unit_to_check: Unit in parent.all_units:
+	for unit_to_check: Unit in get_tree().get_nodes_in_group("unit"):
 		if unit_to_check.cell == target_cell:
 			return unit_to_check
 

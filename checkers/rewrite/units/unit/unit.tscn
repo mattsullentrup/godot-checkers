@@ -31,7 +31,7 @@ scale_min = 0.1
 scale_max = 0.15
 scale_curve = SubResource("CurveTexture_kuaio")
 
-[node name="Unit" type="Node2D"]
+[node name="Unit" type="Node2D" groups=["unit"]]
 script = ExtResource("1_w7lj1")
 
 [node name="UnitVisuals" type="Node2D" parent="."]

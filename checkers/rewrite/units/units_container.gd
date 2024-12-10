@@ -4,11 +4,12 @@ extends Node2D
 
 signal battle_over(player_won: bool)
 
-var all_units: Array[Unit]
+#var all_units: Array[Unit]
 var can_click := true
 var _active_group: UnitGroup
 var _current_mouse_cell: Vector2i
 
+@onready var _board := _create_board()
 @onready var _player_group: UnitGroup = %PlayerGroup
 @onready var _opponent_group: UnitGroup = %OpponentGroup
 
@@ -34,16 +35,30 @@ func init() -> void:
 	_player_group.team = Globals.Team.PLAYER
 	_opponent_group.team = Globals.Team.OPPONENT
 	for group: UnitGroup in [_player_group, _opponent_group]:
-		group.all_units = all_units
+		group.board = _board
 		group.turn_completed.connect(_on_turn_completed)
 		group.defeated.connect(_end_the_battle)
 		group.init()
 
 
 func start_battle() -> void:
-	all_units = _get_all_units()
+	#_update_all_units()
 	_active_group = _player_group
 	_player_group.take_turn()
+
+
+func _create_board() -> Array:
+	var board := []
+	for y in Globals.GRID_SIZE:
+		var row := []
+		for x in Globals.GRID_SIZE:
+			row.append(null)
+		board.append(row)
+
+	for unit: Unit in get_tree().get_nodes_in_group("unit"):
+		board[unit.cell.y][unit.cell.x] = unit.duplicate()
+
+	return board
 
 
 func _try_to_select_unit() -> void:
@@ -88,8 +103,6 @@ func _step_turn() -> void:
 		_player_group.take_turn()
 
 
-func _get_all_units() -> Array:
-	var result := []
-	result.assign(_player_group.units)
-	result.append_array(_opponent_group.units)
-	return result
+#func _update_all_units() -> void:
+	#all_units.assign(_player_group.units)
+	#all_units.append_array(_opponent_group.units)

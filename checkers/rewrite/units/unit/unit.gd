@@ -5,7 +5,7 @@ extends Node2D
 const MOVEMENT_DURATION = 0.5
 
 signal unit_defeated(unit: Unit)
-signal movement_completed(unit: Unit)
+signal movement_completed(unit: Unit, start_cell: Vector2i)
 
 @export var directions: Array[Globals.Direction]
 @export var normal_color: Color
@@ -43,7 +43,7 @@ func move(new_cell: Vector2i) -> void:
 	z_index += 1
 
 	if can_jump:
-		_find_jump_path(new_cell)
+		_find_jump_path(new_cell, cell)
 	else:
 		_tween_move_normally(new_cell)
 
@@ -56,10 +56,10 @@ func _tween_move_normally(new_cell: Vector2i) -> void:
 	normal_move_tween = create_tween()
 	_move_tween(new_cell, normal_move_tween)
 
-	normal_move_tween.tween_callback(_finish_moving.bind(new_cell))
+	normal_move_tween.tween_callback(_finish_moving.bind(new_cell, cell))
 
 
-func _find_jump_path(new_cell: Vector2i) -> void:
+func _find_jump_path(new_cell: Vector2i, start_cell: Vector2i) -> void:
 	var possible_paths: Array[Array]
 	possible_paths = jump_paths.filter(
 			func(path: Array): return path.any(
@@ -85,10 +85,10 @@ func _find_jump_path(new_cell: Vector2i) -> void:
 	var index = possible_paths.find(shortest_path_to_new_cell)
 	var path_to_take = possible_paths[index]
 
-	_jump_tween_through_path(path_to_take, new_cell)
+	_jump_tween_through_path(path_to_take, new_cell, start_cell)
 
 
-func _jump_tween_through_path(path: Array, new_cell: Vector2i) -> void:
+func _jump_tween_through_path(path: Array, new_cell: Vector2i, start_cell: Vector2i) -> void:
 	_jump_tween(path.front())
 
 	if jump_path_tween:
@@ -100,9 +100,9 @@ func _jump_tween_through_path(path: Array, new_cell: Vector2i) -> void:
 
 	# Arrived at clicked cell, even if not end of path
 	if current_cell == new_cell:
-		_finish_moving(new_cell)
+		_finish_moving(new_cell, start_cell)
 	else:
-		_jump_tween_through_path(path, new_cell)
+		_jump_tween_through_path(path, new_cell, start_cell)
 		return
 
 
@@ -143,15 +143,16 @@ func _move_tween(new_cell, tween) -> void:
 			.set_ease(Tween.EASE_OUT)
 
 
-func _finish_moving(new_cell: Vector2i) -> void:
+func _finish_moving(new_cell: Vector2i, start_cell: Vector2i) -> void:
 	cell = new_cell
 	z_index -= 1
-	movement_completed.emit(self)
+	movement_completed.emit(self, start_cell)
 
 
 func _set_is_king(value) -> void:
-	%ChipStackSound.play()
 	is_king = value
+	if is_king:
+		%ChipStackSound.play()
 	for vector in Globals.movement_vectors:
 		if not directions.has(vector):
 			directions.append(vector)
