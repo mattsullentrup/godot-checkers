@@ -12,7 +12,6 @@ signal movement_completed(unit: Unit)
 @export var king_color: Color
 @export var team: Globals.Team
 
-# INFO: This is only used for other nodes to display/check if unit can move to click
 var available_cells: Array[Vector2i]
 var jump_paths: Array[Array]
 var can_move: bool
