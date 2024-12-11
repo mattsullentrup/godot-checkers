@@ -2,11 +2,12 @@ class_name UnitMovement
 extends Node2D
 
 
-#var board: Array
+var board: Array
 @onready var parent: UnitGroup = get_parent()
 
 
-func get_moveable_units(board: Array[Array]) -> Array[Unit]:
+func get_moveable_units(new_board: Array[Array]) -> Array[Unit]:
+	board.assign(new_board)
 	var result: Array[Unit] = []
 	var units = []
 	for row in board:
@@ -37,11 +38,11 @@ func _can_unit_move(unit: Unit) -> bool:
 
 		var target_cell = unit.cell + Globals.movement_vectors.get(direction)
 		if not _is_tile_valid(target_cell):
-			break
+			continue
 
 		var adjacent_unit = _get_adjacent_unit(target_cell)
 		if not adjacent_unit == null:
-			break
+			continue
 
 		unit.can_move = true
 		normal_moves.append(target_cell)
@@ -75,8 +76,8 @@ func _get_first_jump_path(unit: Unit, jump_target_cell: Vector2i, adjacent_unit:
 	if not unit.available_cells.has(jump_target_cell):
 		unit.available_cells.append(jump_target_cell)
 
-	if not parent.jumpable_units.has(unit):
-		parent.jumpable_units.append(unit)
+	#if not parent.jumpable_units.has(unit):
+		#parent.jumpable_units.append(unit)
 
 	unit.can_jump = true
 	unit.can_move = true
@@ -89,17 +90,23 @@ func _get_first_jump_path(unit: Unit, jump_target_cell: Vector2i, adjacent_unit:
 	return jump_path
 
 
-func _discard_normal_moves(unit: Unit) -> void:
-	unit.available_cells = unit.available_cells.filter(
-			func(x: Vector2i): return not unit.cell.distance_squared_to(x) \
-					== Globals.ADJACENT_CELL_SQUARED_DISTANCE
-	)
+#func _discard_normal_moves(unit: Unit) -> void:
+	#unit.available_cells = unit.available_cells.filter(
+			#func(x: Vector2i): return not unit.cell.distance_squared_to(x) \
+					#== Globals.ADJACENT_CELL_SQUARED_DISTANCE
+	#)
 
 
 func _get_adjacent_unit(target_cell: Vector2i) -> Unit:
-	for unit_to_check: Unit in get_tree().get_nodes_in_group("unit"):
-		if unit_to_check.cell == target_cell:
-			return unit_to_check
+	for row in board:
+		for cell in row:
+			var unit := cell as Unit
+			if unit and unit.cell == target_cell:
+				return unit
+
+	#for unit_to_check: Unit in get_tree().get_nodes_in_group("unit"):
+		#if unit_to_check.cell == target_cell:
+			#return unit_to_check
 
 	return null
 
@@ -145,7 +152,8 @@ func _get_next_jump(unit: Unit, starting_cell: Vector2i, direction: Vector2i) ->
 func _create_jump_data(target_cell: Vector2i, jumped_cell: Vector2i) -> JumpData:
 	var jump_data := JumpData.new()
 	jump_data.target_cell = target_cell
-	for unit_on_board: Unit in parent.all_units:
+	var all_units = parent.get_all_units(board)
+	for unit_on_board: Unit in all_units["player"].append_array("enemy"):
 		if not unit_on_board.cell == jumped_cell:
 			continue
 
@@ -159,12 +167,15 @@ func _can_jump_to_cell(unit: Unit, target_cell: Vector2i, jumped_cell: Vector2i)
 	if not _is_tile_valid(target_cell):
 		return false
 
+	var all_units := parent.get_all_units(board)
+	var units = all_units["player"]
+	units.append_array(all_units["enemy"])
 	# Cell is occupied
-	if parent.all_units.any(func(x: Unit): return x.cell == target_cell and not x == unit):
+	if units.any(func(u: Unit): return u.cell == target_cell and not u == unit):
 		return false
 
 	# Will jump over an enemy, not a teammate
-	return parent.all_units.any(
+	return units.any(
 			func(x: Unit): return x.cell == jumped_cell and not x.team == unit.team
 	)
 
