@@ -8,8 +8,8 @@ signal battle_over(player_won: bool)
 var can_click := true
 var _active_group: UnitGroup
 var _current_mouse_cell: Vector2i
+var _board: Array[Array]
 
-@onready var _board := _create_board()
 @onready var _player_group: UnitGroup = %PlayerGroup
 @onready var _opponent_group: UnitGroup = %OpponentGroup
 
@@ -42,23 +42,23 @@ func init() -> void:
 
 
 func start_battle() -> void:
-	#_update_all_units()
+	update_board()
 	_active_group = _player_group
 	_player_group.take_turn()
 
 
-func _create_board() -> Array:
-	var board := []
+func update_board() -> void:
+	#var board: Array[Array] = []
 	for y in Globals.GRID_SIZE:
 		var row := []
 		for x in Globals.GRID_SIZE:
 			row.append(null)
-		board.append(row)
+		_board.append(row)
 
 	for unit: Unit in get_tree().get_nodes_in_group("unit"):
-		board[unit.cell.y][unit.cell.x] = unit.duplicate()
+		_board[unit.cell.y][unit.cell.x] = unit
 
-	return board
+	#return board
 
 
 func _try_to_select_unit() -> void:

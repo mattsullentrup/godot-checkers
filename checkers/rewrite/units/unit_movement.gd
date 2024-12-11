@@ -7,8 +7,15 @@ extends Node2D
 
 
 func get_moveable_units(board: Array[Array]) -> Array[Unit]:
-	var result = []
-	for unit: Unit in parent.units:
+	var result: Array[Unit] = []
+	var units = []
+	for row in board:
+		for cell in row:
+			var unit := cell as Unit
+			if unit and unit.team == parent.team:
+				units.append(unit)
+
+	for unit: Unit in units:
 		unit.available_cells.clear()
 		if _can_unit_move(unit):
 			result.append(unit)
@@ -40,7 +47,7 @@ func _can_unit_move(unit: Unit) -> bool:
 		normal_moves.append(target_cell)
 
 	if normal_moves:
-		unit.available_cells = normal_moves
+		unit.available_cells.assign(normal_moves)
 
 	return not unit.available_cells.is_empty()
 
