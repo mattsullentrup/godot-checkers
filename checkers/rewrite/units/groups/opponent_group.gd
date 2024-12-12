@@ -8,19 +8,24 @@ func take_turn() -> void:
 	for unit: Unit in moveable_units:
 		var moves := {}
 		for cell in unit.available_cells:
-			#var original_cell = unit.cell
-			#_simulate_move(cell, unit, board)
 			moves[cell] = _minimax(board, 3, true)
-			#_simulate_move(original_cell, unit, board)
 
 		var best_score = moves.values().max()
 		var best_cell = moves.find_key(best_score)
-		unit_scores[best_score] = { "unit": unit, "cell": best_cell }
+		#unit_scores[best_score] = { "unit": unit, "cell": best_cell }
+		unit_scores[unit] = { "score": best_score, "cell": best_cell }
 
-	var best_unit_score = unit_scores.keys().max()
-	var move = unit_scores[best_unit_score]
-	selected_unit = move["unit"]
-	var cell = move["cell"]
+	#var best_unit_score = unit_scores.keys().max()
+	#var move = unit_scores[best_unit_score]
+	#selected_unit = move["unit"]
+	#var cell = move["cell"]
+	var scores = []
+	var cell
+	var best = int(-INF)
+	for move_data in unit_scores.values():
+		if move_data["score"] > best:
+			best = move_data["score"]
+			cell = move_data["cell"]
 	if selected_unit:
 		selected_unit.move(cell)
 
@@ -32,9 +37,18 @@ func _minimax(board_state: Array, depth: int, is_maximizing: bool) -> int:
 
 	# TODO: figure out how to simulate jumping over a piece
 
+	# Do this to avoid fucking with the unit's cell and available moves when sending it to
+	# UnitMovement to reevaluate it's position
+	# We want all the units to be how they were right as the turn started
+	# Array.duplicate(deepcopy: true) isn't enough because it doesn't copy the nested array elements
+	# NOTE: Its still busted fuck yo ucomputer
+	_duplicate_units(board_state)
+
 	if is_maximizing:
 		var max_eval = int(-INF)
-		for enemy_unit in _unit_movement.get_moveable_units(board_state):
+		var current_moveable_units = _unit_movement.get_moveable_units(board_state)
+		for enemy_unit in current_moveable_units:
+			var new_unit = enemy_unit.duplicate()
 			var eval = null
 			for cell in enemy_unit.available_cells:
 				var original_cell = enemy_unit.cell
@@ -80,6 +94,14 @@ func _simulate_move(new_cell: Vector2i, unit: Unit, board_state: Array[Array]) -
 	board_state[unit.cell.y][unit.cell.x] = null
 	board_state[new_cell.y][new_cell.x] = unit
 	unit.cell = new_cell
+
+
+func _duplicate_units(board_state: Array[Array]) -> void:
+	for row in board_state:
+		for cell in row:
+			var unit := cell as Unit
+			if unit:
+				unit = unit.duplicate()
 
 
 func _on_unit_movement_completed(unit: Unit, start_cell: Vector2i) -> void:

@@ -49,6 +49,7 @@ func start_battle() -> void:
 
 func update_board() -> void:
 	#var board: Array[Array] = []
+	_board.clear()
 	for y in Globals.GRID_SIZE:
 		var row := []
 		for x in Globals.GRID_SIZE:
