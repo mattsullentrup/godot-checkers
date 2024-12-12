@@ -16,7 +16,7 @@ var moveable_units: Array[Unit]
 var board: Array[Array]
 var selected_unit: Unit
 
-@onready var _unit_movement: UnitMovement = %UnitMovement
+@onready var unit_movement: UnitMovement = %UnitMovement
 
 
 func init() -> void:
@@ -54,7 +54,7 @@ func take_turn() -> void:
 	for unit: Unit in moveable_units:
 		unit.can_move = false
 
-	moveable_units.assign(_unit_movement.get_moveable_units(board))
+	moveable_units.assign(unit_movement.get_moveable_units(board))
 
 	#if jumpable_units.is_empty():
 		#return
