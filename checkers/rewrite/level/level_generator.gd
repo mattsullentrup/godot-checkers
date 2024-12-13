@@ -28,10 +28,10 @@ func _create_test_scene():
 			_make_new_unit(_opponent_group, Vector2i(x, y))
 
 
-func _make_new_unit(group: UnitGroup, pos) -> void:
+func _make_new_unit(group: UnitGroup, pos: Vector2i) -> void:
 	var unit = PLAYER_UNIT.instantiate() if group.team == Globals.Team.PLAYER else OPPONENT_UNIT.instantiate()
-	unit.cell = pos
-	unit.global_position = Navigation.cell_to_world(unit.cell)
+	#unit.cell = pos
+	unit.global_position = Navigation.cell_to_world(pos)
 	group.add_child(unit)
 
 

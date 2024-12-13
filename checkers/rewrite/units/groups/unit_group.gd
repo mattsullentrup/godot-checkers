@@ -108,9 +108,10 @@ func _on_unit_defeated(unit: Unit) -> void:
 
 
 func _on_unit_movement_completed(unit: Unit, start_cell: Vector2i) -> void:
+	var unit_cell = Navigation.world_to_cell(unit.position)
 	board[start_cell.y][start_cell.x] = null
-	board[unit.cell.y][unit.cell.x] = unit
-	if unit.cell.y == _other_side_of_board_y:
+	board[unit_cell.y][unit_cell.x] = unit
+	if unit_cell.y == _other_side_of_board_y:
 		unit.is_king = true
 
 	if unit.jump_paths.all(func(x: Array) -> bool: return x.is_empty()):

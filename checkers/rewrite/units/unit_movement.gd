@@ -36,7 +36,7 @@ func _can_unit_move(unit: Unit) -> bool:
 			normal_moves.clear()
 			continue
 
-		var target_cell = unit.cell + Globals.movement_vectors.get(direction)
+		var target_cell = Navigation.world_to_cell(unit.position) + Globals.movement_vectors.get(direction)
 		if not _is_tile_valid(target_cell):
 			continue
 
@@ -55,7 +55,7 @@ func _can_unit_move(unit: Unit) -> bool:
 
 func _can_unit_jump(unit: Unit, direction: Globals.Direction) -> bool:
 	var movement_direction = Globals.movement_vectors.get(direction)
-	var adjacent_cell = unit.cell + movement_direction
+	var adjacent_cell = Navigation.world_to_cell(unit.position) + movement_direction
 	var adjacent_unit = _get_adjacent_unit(adjacent_cell)
 	if adjacent_unit == null or adjacent_unit.team == unit.team:
 		return false
@@ -70,7 +70,7 @@ func _can_unit_jump(unit: Unit, direction: Globals.Direction) -> bool:
 
 
 func _get_first_jump_path(unit: Unit, jump_target_cell: Vector2i, adjacent_unit: Unit) -> Array[JumpData]:
-	if not _can_jump_to_cell(unit, jump_target_cell, adjacent_unit.cell):
+	if not _can_jump_to_cell(unit, jump_target_cell, Navigation.world_to_cell(adjacent_unit.position)):
 		return []
 
 	if not unit.available_cells.has(jump_target_cell):
@@ -101,12 +101,8 @@ func _get_adjacent_unit(target_cell: Vector2i) -> Unit:
 	for row in board:
 		for cell in row:
 			var unit := cell as Unit
-			if unit and unit.cell == target_cell:
+			if unit and Navigation.world_to_cell(unit.position) == target_cell:
 				return unit
-
-	#for unit_to_check: Unit in get_tree().get_nodes_in_group("unit"):
-		#if unit_to_check.cell == target_cell:
-			#return unit_to_check
 
 	return null
 
@@ -154,7 +150,7 @@ func _create_jump_data(target_cell: Vector2i, jumped_cell: Vector2i) -> JumpData
 	jump_data.target_cell = target_cell
 	var all_units = parent.get_all_units(board)
 	for unit_on_board: Unit in all_units["player"].append_array("enemy"):
-		if not unit_on_board.cell == jumped_cell:
+		if not Navigation.world_to_cell(unit_on_board.position) == jumped_cell:
 			continue
 
 		jump_data.jumpable_unit = unit_on_board
@@ -171,12 +167,12 @@ func _can_jump_to_cell(unit: Unit, target_cell: Vector2i, jumped_cell: Vector2i)
 	var units = all_units["player"]
 	units.append_array(all_units["enemy"])
 	# Cell is occupied
-	if units.any(func(u: Unit): return u.cell == target_cell and not u == unit):
+	if units.any(func(u: Unit): return Navigation.world_to_cell(u.position) == target_cell and not u == unit):
 		return false
 
 	# Will jump over an enemy, not a teammate
 	return units.any(
-			func(x: Unit): return x.cell == jumped_cell and not x.team == unit.team
+			func(x: Unit): return Navigation.world_to_cell(x.position) == jumped_cell and not x.team == unit.team
 	)
 
 

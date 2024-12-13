@@ -57,7 +57,8 @@ func update_board() -> void:
 		_board.append(row)
 
 	for unit: Unit in get_tree().get_nodes_in_group("unit"):
-		_board[unit.cell.y][unit.cell.x] = unit
+		var unit_cell = Navigation.world_to_cell(unit.position)
+		_board[unit_cell.y][unit_cell.x] = unit
 
 	#return board
 
@@ -65,7 +66,7 @@ func update_board() -> void:
 func _try_to_select_unit() -> void:
 	for unit in _active_group.units:
 		if (
-				not unit.cell == _current_mouse_cell \
+				not Navigation.world_to_cell(unit.position) == _current_mouse_cell \
 				or unit not in _active_group.moveable_units \
 				or unit.can_move == false
 		):
