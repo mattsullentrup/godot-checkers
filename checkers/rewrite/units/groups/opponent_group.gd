@@ -20,7 +20,7 @@ func take_turn() -> void:
 		if move_data["score"] >= best:
 			best = move_data["score"]
 			cell = move_data["cell"]
-			selected_unit = unit_scores.find_key(move_data)
+			set_selected_unit(unit_scores.find_key(move_data))
 
 	if selected_unit:
 		selected_unit.move(cell)

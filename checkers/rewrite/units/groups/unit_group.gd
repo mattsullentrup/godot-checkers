@@ -11,8 +11,6 @@ signal defeated
 
 var units: Array[Unit]
 var moveable_units: Array[Unit]
-#var jumpable_units: Array[Unit]
-#var all_units: Array[Unit]
 var board: Array[Array]
 var selected_unit: Unit
 
@@ -56,16 +54,6 @@ func take_turn() -> void:
 
 	moveable_units.assign(unit_movement.get_moveable_units(board))
 
-	#if jumpable_units.is_empty():
-		#return
-#
-	#for unit in moveable_units:
-		#if not unit.can_jump:
-			#unit.can_move = false
-#
-	#moveable_units.clear()
-	#moveable_units = jumpable_units.duplicate()
-
 
 func get_all_units(board_state: Array) -> Dictionary:
 	var player_units = []
@@ -101,7 +89,9 @@ func _on_unit_defeated(unit: Unit) -> void:
 	units.erase(unit)
 	for row: Array in board:
 		if row.has(unit):
-			row.erase(unit)
+			var index = row.find(unit)
+			row[index] = null
+			break
 
 	if units.is_empty():
 		defeated.emit()

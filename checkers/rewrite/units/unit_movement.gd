@@ -149,7 +149,8 @@ func _create_jump_data(target_cell: Vector2i, jumped_cell: Vector2i) -> JumpData
 	var jump_data := JumpData.new()
 	jump_data.target_cell = target_cell
 	var all_units = parent.get_all_units(board)
-	for unit_on_board: Unit in all_units["player"].append_array("enemy"):
+	all_units["player"].append_array(all_units["enemy"])
+	for unit_on_board: Unit in all_units["player"]:
 		if not Navigation.world_to_cell(unit_on_board.position) == jumped_cell:
 			continue
 
