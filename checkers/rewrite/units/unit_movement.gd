@@ -28,6 +28,11 @@ func get_moveable_units(new_board: Array[Array]) -> Array[Unit]:
 		#if unit.can_jump:
 			#_discard_normal_moves(unit)
 
+	if result.any(func(u: Unit): return u.jump_paths):
+		for unit in result:
+			if not unit.jump_paths:
+				unit.can_move = false
+		return result.filter(func(u: Unit): return u.jump_paths)
 	return result
 
 
@@ -44,7 +49,7 @@ func _can_unit_move(unit: Unit) -> bool:
 			continue
 
 		var adjacent_unit = _get_adjacent_unit(target_cell)
-		if not adjacent_unit == null:
+		if adjacent_unit:
 			continue
 
 		unit.can_move = true
