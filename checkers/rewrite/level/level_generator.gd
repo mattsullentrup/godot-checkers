@@ -48,6 +48,19 @@ func _draw_tiles() -> void:
 					true
 			)
 
+			var default_font = ThemeDB.fallback_font
+			#var default_font_size = ThemeDB.fallback_font_size
+			var pos = Vector2i(x * Globals.CELL_SIZE, y * Globals.CELL_SIZE)
+			var cell = Vector2i(x, y)
+			var font_size = 14
+			var text = "  {0}   {1}".format([pos, cell])
+			draw_string_outline(default_font, Vector2(pos.x, pos.y + 15), text, \
+					HORIZONTAL_ALIGNMENT_LEFT, -1, font_size, 4, Color.BLACK)
+
+			draw_string(default_font, Vector2(pos.x, pos.y + 15), text, \
+					HORIZONTAL_ALIGNMENT_LEFT, -1, font_size, Color.YELLOW)
+
+
 
 func _create_units(start_y: int, end_y: int, group: UnitGroup) -> void:
 	for y in range(start_y, end_y):

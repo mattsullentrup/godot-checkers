@@ -97,6 +97,7 @@ func _end_the_battle() -> void:
 
 
 func _step_turn() -> void:
+	Globals.turn_number += 1
 	if _active_group == _player_group:
 		_active_group = _opponent_group
 		_opponent_group.take_turn()

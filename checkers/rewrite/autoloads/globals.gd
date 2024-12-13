@@ -20,6 +20,9 @@ const ADJACENT_CELL_SQUARED_DISTANCE = 2
 
 var movement_vectors := {}
 
+# For debug purposes only
+var turn_number := 1
+
 
 func _init() -> void:
 	movement_vectors[Direction.UPPER_LEFT] = Vector2i(-1, -1)
