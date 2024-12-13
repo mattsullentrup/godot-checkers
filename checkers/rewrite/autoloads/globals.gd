@@ -29,3 +29,7 @@ func _init() -> void:
 	movement_vectors[Direction.UPPER_RIGHT] = Vector2i(1, -1)
 	movement_vectors[Direction.LOWER_LEFT] = Vector2i(-1, 1)
 	movement_vectors[Direction.LOWER_RIGHT] = Vector2i.ONE
+
+
+func print_board(board: Array[Array]) -> void:
+	pass

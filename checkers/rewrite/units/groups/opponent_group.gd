@@ -81,6 +81,24 @@ func _simulate_move(new_cell: Vector2i, unit: Unit, board_state: Array[Array]) -
 	board_state[unit_cell.y][unit_cell.x] = null
 	board_state[new_cell.y][new_cell.x] = unit
 	unit.position = Navigation.cell_to_world(new_cell)
+	#if unit.jump_paths.any(func(path: Array): \
+			#return path.any(func(j: JumpData): return j.target_cell == new_cell)):
+	var data: JumpData
+	for path in unit.jump_paths:
+		for jump_data in path:
+			if jump_data.target_cell == new_cell:
+				data = jump_data
+				break
+
+	if data:
+		var jumped_unit = data.jumpable_unit
+		for row in board_state:
+			if row.has(jumped_unit):
+				var jumped_cell = Navigation.world_to_cell(jumped_unit.position)
+				board_state[jumped_cell.y][jumped_cell.x] = null
+				break
+
+		jumped_unit.free()
 
 
 func _duplicate_board_units(board_state: Array[Array]) -> Array[Array]:
