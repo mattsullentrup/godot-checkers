@@ -6,6 +6,8 @@ func take_turn() -> void:
 
 	var unit_scores := {}
 	for unit: Unit in moveable_units:
+		if unit.position == Vector2(768, 384):
+			pass
 		var moves := {}
 		for cell in unit.available_cells:
 			moves[cell] = _minimax(board, 3, true)
@@ -86,7 +88,9 @@ func _duplicate_board_units(board_state: Array[Array]) -> Array[Array]:
 		for x in board_state[0].size():
 			var unit := board_state[y][x] as Unit
 			if unit:
-				board_state[y][x] = unit.duplicate()
+				var new_unit := unit.duplicate()
+				new_unit.directions = unit.directions
+				board_state[y][x] = new_unit
 
 	return board_state
 

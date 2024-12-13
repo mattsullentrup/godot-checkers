@@ -17,6 +17,8 @@ func get_moveable_units(new_board: Array[Array]) -> Array[Unit]:
 				units.append(unit)
 
 	for unit: Unit in units:
+		if unit.position == Vector2(768, 384):
+			pass
 		unit.available_cells.clear()
 		if _can_unit_move(unit):
 			result.append(unit)
