@@ -15,7 +15,7 @@ signal movement_completed(unit: Unit, start_cell: Vector2i)
 var available_cells: Array[Vector2i]
 var jump_paths: Array[Array]
 var can_move: bool
-var can_jump: bool
+#var can_jump: bool
 var normal_move_tween: Tween
 var jump_path_tween: Tween
 #var cell: Vector2i
@@ -43,7 +43,8 @@ func move(new_cell: Vector2i) -> void:
 	z_index += 1
 
 	var cell = Navigation.world_to_cell(position)
-	if can_jump:
+	#if can_jump:
+	if jump_paths:
 		_find_jump_path(new_cell, cell)
 	else:
 		_tween_move_normally(new_cell, cell)

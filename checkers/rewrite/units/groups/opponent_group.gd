@@ -1,16 +1,19 @@
 extends UnitGroup
 
 
+const DEPTH = 4
+
+
 func take_turn() -> void:
 	super()
 
 	var unit_scores := {}
 	for unit: Unit in moveable_units:
-		if unit.position == Vector2(768, 384):
-			pass
+		#if unit.position == Vector2(768, 384):
+			#pass
 		var moves := {}
 		for cell in unit.available_cells:
-			moves[cell] = _minimax(board, 2, true)
+			moves[cell] = _minimax(board, DEPTH, true)
 
 		var best_score = moves.values().max()
 		var best_cell = moves.find_key(best_score)
@@ -24,14 +27,17 @@ func take_turn() -> void:
 			cell = move_data["cell"]
 			set_selected_unit(unit_scores.find_key(move_data))
 
+
+	print_orphan_nodes()
+	print(best)
 	if selected_unit:
 		selected_unit.move(cell)
 
 
 func _minimax(board_state: Array, depth: int, is_maximizing: bool) -> int:
-	printt("depth: " + str(depth), str(is_maximizing) + ":")
-	print()
-	Globals.print_board(board_state)
+	#printt("depth: " + str(depth), str(is_maximizing) + ":")
+	#print()
+	#Globals.print_board(board_state)
 	var simulated_units := get_all_units(board_state)
 	if depth == 0 or simulated_units["player"].is_empty() or simulated_units["enemy"].is_empty():
 		return get_board_evaluation(board_state)
@@ -63,9 +69,13 @@ func _minimax(board_state: Array, depth: int, is_maximizing: bool) -> int:
 			else:
 				if eval < best:
 					best = eval
-			print(best)
-			print("~~~~~~~~~~")
+			#print(best)
+			#print("~~~~~~~~~~")
 
+	#for row in board_state:
+		#for cell in row:
+			#if cell is Unit:
+				#cell.queue_free()
 	return best
 
 

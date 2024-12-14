@@ -54,6 +54,7 @@ func take_turn() -> void:
 		unit.can_move = false
 
 	moveable_units.assign(unit_movement.get_moveable_units(board))
+	pass
 
 
 func get_all_units(board_state: Array) -> Dictionary:
@@ -77,7 +78,7 @@ func _end_turn() -> void:
 	selected_unit = null
 	for unit: Unit in moveable_units:
 		unit.can_move = false
-		unit.can_jump = false
+		#unit.can_jump = false
 		unit.jump_paths.clear()
 		unit.available_cells.clear()
 

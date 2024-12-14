@@ -18,9 +18,11 @@ func get_moveable_units(new_board: Array[Array]) -> Array[Unit]:
 
 	for unit: Unit in units:
 		#if unit.position == Vector2(768, 384):
-		if unit.position == Vector2(768, 384) and Globals.turn_number == 4:
-			pass
+		#if unit.position == Vector2(768, 384) and Globals.turn_number == 4:
+			#pass
 		unit.available_cells.clear()
+		unit.jump_paths.clear()
+		unit.can_move = false
 		if _can_unit_move(unit):
 			result.append(unit)
 		#_get_unit_jump_moves(unit, direction)
@@ -86,7 +88,7 @@ func _get_first_jump_path(unit: Unit, jump_target_cell: Vector2i, adjacent_unit:
 	#if not parent.jumpable_units.has(unit):
 		#parent.jumpable_units.append(unit)
 
-	unit.can_jump = true
+	#unit.can_jump = true
 	unit.can_move = true
 
 	var first_jump := JumpData.new(adjacent_unit, jump_target_cell)
