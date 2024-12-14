@@ -152,7 +152,7 @@ func _finish_moving(new_cell: Vector2i, start_cell: Vector2i) -> void:
 
 func _set_is_king(value) -> void:
 	is_king = value
-	if is_king:
+	if is_king and is_inside_tree():
 		%ChipStackSound.play()
 	for vector in Globals.movement_vectors:
 		if not directions.has(vector):

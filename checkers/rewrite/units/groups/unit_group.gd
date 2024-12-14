@@ -45,6 +45,7 @@ func _disconnect_selected_unit_signal() -> void:
 
 
 func take_turn() -> void:
+	#Globals.print_board(board)
 	if selected_unit:
 		_disconnect_selected_unit_signal()
 

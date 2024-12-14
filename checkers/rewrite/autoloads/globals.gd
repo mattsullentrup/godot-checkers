@@ -32,4 +32,19 @@ func _init() -> void:
 
 
 func print_board(board: Array[Array]) -> void:
-	pass
+	var lines = []
+	for row in board:
+		var line := ""
+		for cell in row:
+			if not cell:
+				line += "_ "
+			else:
+				var team = "X" if cell.team == Globals.Team.PLAYER else "O"
+				line += team + " "
+		lines.append(line)
+
+	for line in lines:
+		print(line)
+
+	print()
+	print()

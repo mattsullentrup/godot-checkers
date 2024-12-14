@@ -10,7 +10,7 @@ func take_turn() -> void:
 			pass
 		var moves := {}
 		for cell in unit.available_cells:
-			moves[cell] = _minimax(board, 3, true)
+			moves[cell] = _minimax(board, 2, true)
 
 		var best_score = moves.values().max()
 		var best_cell = moves.find_key(best_score)
@@ -29,6 +29,9 @@ func take_turn() -> void:
 
 
 func _minimax(board_state: Array, depth: int, is_maximizing: bool) -> int:
+	printt("depth: " + str(depth), str(is_maximizing) + ":")
+	print()
+	Globals.print_board(board_state)
 	var simulated_units := get_all_units(board_state)
 	if depth == 0 or simulated_units["player"].is_empty() or simulated_units["enemy"].is_empty():
 		return get_board_evaluation(board_state)
@@ -45,7 +48,7 @@ func _minimax(board_state: Array, depth: int, is_maximizing: bool) -> int:
 		for cell in unit.available_cells:
 			var original_cell = Navigation.world_to_cell(unit.position)
 			_simulate_move(cell, unit, board_state)
-			eval = _minimax(board_state, depth - 1, false)
+			eval = _minimax(board_state, depth - 1, not is_maximizing)
 			_simulate_move(original_cell, unit, board_state)
 
 			if is_maximizing:
@@ -54,6 +57,8 @@ func _minimax(board_state: Array, depth: int, is_maximizing: bool) -> int:
 			else:
 				if eval < best:
 					best = eval
+			print(best)
+			print("~~~~~~~~~~")
 
 	return best
 
@@ -98,7 +103,7 @@ func _simulate_move(new_cell: Vector2i, unit: Unit, board_state: Array[Array]) -
 				board_state[jumped_cell.y][jumped_cell.x] = null
 				break
 
-		jumped_unit.free()
+		#jumped_unit.free()
 
 
 func _duplicate_board_units(board_state: Array[Array]) -> Array[Array]:

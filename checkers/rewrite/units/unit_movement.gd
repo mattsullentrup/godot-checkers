@@ -18,7 +18,7 @@ func get_moveable_units(new_board: Array[Array]) -> Array[Unit]:
 
 	for unit: Unit in units:
 		#if unit.position == Vector2(768, 384):
-		if unit.position == Vector2(640, 512) and Globals.turn_number == 3:
+		if unit.position == Vector2(768, 384) and Globals.turn_number == 4:
 			pass
 		unit.available_cells.clear()
 		if _can_unit_move(unit):
@@ -41,7 +41,6 @@ func _can_unit_move(unit: Unit) -> bool:
 	for direction in unit.directions:
 		if _can_unit_jump(unit, direction):
 			unit.can_move = true
-			normal_moves.clear()
 			continue
 
 		var target_cell = Navigation.world_to_cell(unit.position) + Globals.movement_vectors.get(direction)
@@ -55,7 +54,7 @@ func _can_unit_move(unit: Unit) -> bool:
 		unit.can_move = true
 		normal_moves.append(target_cell)
 
-	if normal_moves:
+	if unit.jump_paths.is_empty():
 		unit.available_cells.assign(normal_moves)
 
 	return not unit.available_cells.is_empty()
