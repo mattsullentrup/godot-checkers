@@ -1,4 +1,4 @@
-class_name LevelGenerator
+class_name BoardGenerator
 extends Node2D
 
 

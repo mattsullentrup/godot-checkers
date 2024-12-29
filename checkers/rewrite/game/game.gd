@@ -1,14 +1,12 @@
-class_name Level
 extends Node2D
 
 
 @onready var _ui: CanvasLayer = %UI
 @onready var _units_container: UnitsContainer = %Units
-@onready var _level_generator: LevelGenerator = %LevelGenerator
 
 
 func _ready() -> void:
-	_level_generator.generate_level()
+	%BoardGenerator.generate_level()
 
 	_units_container.battle_over.connect(_on_battle_over)
 	_units_container.init()
