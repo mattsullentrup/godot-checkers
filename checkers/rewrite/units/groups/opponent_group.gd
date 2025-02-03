@@ -27,7 +27,6 @@ func take_turn() -> void:
 			cell = move_data["cell"]
 			set_selected_unit(unit_scores.find_key(move_data))
 
-
 	print_orphan_nodes()
 	print(best)
 	if selected_unit:

@@ -18,7 +18,9 @@ var can_move: bool
 #var can_jump: bool
 var normal_move_tween: Tween
 var jump_path_tween: Tween
-#var cell: Vector2i
+var cell: Vector2i:
+	get:
+		return Navigation.world_to_cell(position)
 var color: Color
 
 @export var is_king: bool:
@@ -42,7 +44,7 @@ func explode() -> void:
 func move(new_cell: Vector2i) -> void:
 	z_index += 1
 
-	var cell = Navigation.world_to_cell(position)
+	#var cell = Navigation.world_to_cell(position)
 	#if can_jump:
 	if jump_paths:
 		_find_jump_path(new_cell, cell)
@@ -50,7 +52,7 @@ func move(new_cell: Vector2i) -> void:
 		_tween_move_normally(new_cell, cell)
 
 
-func _tween_move_normally(new_cell: Vector2i, cell: Vector2i) -> void:
+func _tween_move_normally(new_cell: Vector2i, start_cell: Vector2i) -> void:
 	%ChipSlideSound.play()
 	if normal_move_tween:
 		normal_move_tween.kill()
@@ -58,7 +60,7 @@ func _tween_move_normally(new_cell: Vector2i, cell: Vector2i) -> void:
 	normal_move_tween = create_tween()
 	_move_tween(new_cell, normal_move_tween)
 
-	normal_move_tween.tween_callback(_finish_moving.bind(new_cell, cell))
+	normal_move_tween.tween_callback(_finish_moving.bind(new_cell, start_cell))
 
 
 func _find_jump_path(new_cell: Vector2i, start_cell: Vector2i) -> void:
